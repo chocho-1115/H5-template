@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html class='noScroll' xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<!--<meta id='viewEle' name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>-->
+<meta id='viewEle' name="viewport" content="width=640,user-scalable=no,target-densitydpi = device-dpi " />
+<title>赶紧换标题</title>
+<link href="css/reset.css" rel="stylesheet" />
+<link href="plugins/animate.css" rel="stylesheet" />
+<link href="css/hy1.css" rel="stylesheet" />
+
+<script src="plugins/jquery-2.1.1.min.js"></script>
+<script src="plugins/hammer.min.js"></script>
+<script src="plugins/TweenMax.min.js"></script>
+<script src="plugins/TimelineMax.min.js"></script>
+<script src="plugins/easeljs-0.8.1.min.js"></script>
+</head>
+<body>
+
+<!--主体部分-->
+<div class="content" id="content">
+
+	<div class="page page0 lazy_load" data-pic='images/p0.jpg'>
+    	<div class="nr">
+        	<p class="abso load_num">LOADING<span id="set_load_num" >0</span></p>
+        </div>
+    </div>
+    
+    <div class="page page1">
+    	<div class="nr">第一页</div>
+    </div>
+    
+    <div class="page page2">
+    	<div class="nr">第二页</div>
+    </div>
+    
+    <div class="page page3">
+    	<div class="nr">第三页</div>
+    </div>
+
+	<div class="info">
+    	<span class="close"></span>
+    	<input type="text" class='abso text text1' value='' />
+        <input type="text" class='abso text text2' value='' />
+        <input type="text" class='abso text text3' value='' />
+        <span class="btn"></span>
+    </div>
+
+
+</div>
+<!--end 主体部分-->
+
+<!--向上滑动的箭头提示-->
+<img class="pt-page-moveIconUp" id='upJt' src="images/icon_up.png">
+<!--分享提示-->
+<div id="fx">
+             <img class='fx_text' src="images/fx_text.png" />
+</div>
+
+<div class="micBtn" id="micBtn"></div>
+<!--<audio id="audioShake" src="images/m.mp3" autoplay="autoplay" preload="auto" loop></audio>-->
+<!--<div style='display:none;'>
+	<script language="javascript" type="text/javascript" src="http://js.users.51.la/18208555.js"></script>
+</div>-->
+</body>
+</html>
+<!--页面切换动画-->
+<script src="js/jsEasy.js"></script>
+<script src="js/hy1.js"></script>
+
+
+<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="http://www.hylinkcs.com/lab/jssdk.js" charset="utf-8"></script>
+<script>
+function setFX(opt){
+
+         var wx={
+			title:opt.title,
+			desc:opt.desc,
+			imgUrl:opt.imgUrl,
+			link:opt.link,
+			success:opt.success||null
+         }
+
+         jssdk.init({debug:false}).done(function(){
+		    jssdk.share(wx);
+         })
+	
+}
+
+$(function(){
+	setFX({
+			title:'主标题',
+			desc:'副标题',
+			imgUrl:'',
+			link:'',
+			success:null
+	});
+});
+</script>-->
