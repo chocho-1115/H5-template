@@ -19,7 +19,7 @@ $(window).load(function(e) {
 
 	//添加背景音乐
 	var audioEle = J.addMp4({
-		src:'http://www.oo11.net/music/lvyou20161130.mp3',
+		src:'media/bj.mp3',
 		autoplay:true,
 		loop:true
 	});
@@ -30,7 +30,7 @@ $(window).load(function(e) {
 		autoplay:true
 	});	
 	
-   
+   //关闭页面下拉刷新
    JSeasy.setScroll(false)//
    
    //  获取地址里面带的参数
@@ -42,6 +42,21 @@ $(window).load(function(e) {
    //验证是否为手机号码
    JSeasy.isMobile('15211142729')
    
+   //横屏 
+    //window.orientation = 0
+	JSeasy.rotateWindows({
+		winW:1136,//页面最大宽度 在手机中根据手机高度自动适配
+	    winH:640,//页面适配宽度
+	    callback: function(opt){
+			
+		},
+		onRotate: function(opt){
+			
+		}
+	});
+	
+   
+	
 	/*$.get("http://dqpage.com/h5/lvdi/index.php", {openid:ID,Action:"get"}, function(data){
             console.log(data);//0 玩过；1可以玩；-1没有这个用户 或者不是用微信登陆的
 			isShake = data;
@@ -84,7 +99,7 @@ $(window).load(function(e) {
 		var text1 = $('.info .text1').val().replace(/\s/g, ""),
 			text3 = $('.info .text3').val().replace(/\s/g, ""),
 		  	text2 = $('.info .text2').val().replace(/\s/g, "");
-		if(text1.length==0||text3.length==0){alert('请完善好个人信息！');return false}	
+		if(text1.length==0||text2.length==0||text3.length==0){alert('请完善好个人信息！');return false}	
 		if(!J.isMobile(text2)){alert('电话号码错误！');return false}
 
 		$.post("", {openid:openid,name:text1,tele:text2,address:text3}, function(data){

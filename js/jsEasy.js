@@ -2,7 +2,7 @@
 window.publicInfo = {
 	content : $('#content'),
 	page : $('.page'),
-	indexPage : 0,
+	indexPage : -1,
 	pageStatus : 0,//页面切换状态
 	pageCutover : true,//页面切换开关
 	pageLen : 0,//总共多少页
@@ -28,15 +28,6 @@ var defaultConfig = {
 
 
 window.publicInfo.pageLen = window.publicInfo.page.length;
-
-
-
-var hasTouch=function(){
-	var touchObj={};
-	touchObj.isSupportTouch = "ontouchend" in document ? true : false;
-	touchObj.isEvent=touchObj.isSupportTouch?'touchstart':'click';
-	return touchObj.isEvent;
-};
 
 (function(){
 	
@@ -92,9 +83,9 @@ var hasTouch=function(){
 		//defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false
 		JSeasy.pageFunc = function(num,opt){
 			
-			//if(window.publicInfo.indexPage===num)return false;
+			if(window.publicInfo.indexPage==num)return false
 			
-			if(!window.publicInfo.pageCutover)return false;
+			publicInfo.pageStatus = 0;
 			
 			var opt = opt || {},
 				oldPage = publicInfo.page.eq(publicInfo.indexPage),
@@ -111,10 +102,16 @@ var hasTouch=function(){
 				oldPage.removeClass('show');
 				newPage.addClass('show');
 				if(opt.endCallback)opt.endCallback();
-				publicInfo.pageStatus = 1;
-				if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
+				
+				if(opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false){
 					self.setUpJt(true);
+				}else{
+					self.setUpJt(opt.upJtB);
 				}
+				/*if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
+					self.setUpJt(true);
+				}*/
+				publicInfo.pageStatus = 1;
 			});
 		};
 		//预载器
@@ -241,6 +238,21 @@ var hasTouch=function(){
 			if(result==null)return false;
 			return true;
 		};
+		
+		
+		JSeasy.isEmail = function (str){
+			if(str==null||str=="") return false;
+
+			var result = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  			if(result.test(str)){
+				return true;
+			}else{
+				return false;
+			}
+
+		};
+		
+		
 		JSeasy.addMp4 = function(opt){
 			var audioEle = document.createElement('audio');
 			audioEle.setAttribute('src',opt.src);
@@ -299,7 +311,7 @@ var hasTouch=function(){
 		
 		function stopDefaultScroll(e){
 			e.preventDefault();
-			e.stopPropagetion();
+			e.stopPropagation();
 			//return false;
 		}
 		//是否开启 触摸滚动页面
@@ -319,13 +331,77 @@ var hasTouch=function(){
 				return ( Min + Math.random()*(Max-Min) )
 			}
 		};
-	
+		 
+		JSeasy.rotateWindows = function(opt){
+			opt = opt||{};
+			var isSet = false,
+				winW = opt.winW||1136, winH = opt.winH||640;
+			
+			$('body').addClass('horizontalWindows');//水平窗口
+			
+			changeFunc();
+			window.addEventListener('orientationchange', changeFunc);
+			function changeFunc(event){
+				//pc端
+				if(window.orientation===undefined){
+					$('.content').css({width:winW,height:winH});
+					opt.callback&&opt.callback({winW:winW,winH:winH});
+					return false
+				}
+				
+				if ( window.orientation === 180 || window.orientation === 0 ) {//竖着的
+					if(!isSet){
+						isSet = true;
+						winW = $('body').height();//window.innerHeight;
+						$('.content').css({
+							position:'absolute',
+							left:'50%',
+							top:'50%',
+							transform:'rotate(90deg)',
+							width:winW,
+							height:winH,
+							marginLeft:winW/-2,
+							marginTop:winH/-2
+						})
+						opt.onRotate&&opt.onRotate({winW:winW,winH:winH});
+						opt.callback&&opt.callback({winW:winW,winH:winH});
+					}
+					$('.rotateWindows_tips').css('display','none');
+				}else if( window.orientation == 90 || window.orientation == -90 ) {
+					$('.rotateWindows_tips').css('display','block');
+				}
+				
+			}
+
+		}
 
 }());
 	
 //////////////////////////////////////////
 (function () {
-	
+	//设置翻页事件
+	if(window.publicInfo.page.length>0){
+		
+		console.log(false==0)
+		
+		var mc = new Hammer(publicInfo.content[0]);
+		mc.get('swipe').set({velocity:0,threshold:30,direction:30});//修改滑动的速度与方向
+		
+		//下一页
+		mc.on("swipeup",function(){
+			if(!publicInfo.pageStatus)return false;
+			if(!publicInfo.pageCutover)return false;
+			if(defaultConfig.pageSwipeB[publicInfo.indexPage]===false||defaultConfig.pageSwipeB[publicInfo.indexPage]<0)return false;
+			J.pageFunc(publicInfo.indexPage+1);
+		});
+		//上一页
+		mc.on("swipedown",function(){
+			if(!publicInfo.pageStatus)return false;
+			if(!publicInfo.pageCutover)return false;
+			if(defaultConfig.pageSwipeB[publicInfo.indexPage]===false||defaultConfig.pageSwipeB[publicInfo.indexPage]>0)return false;
+			J.pageFunc(publicInfo.indexPage-1);
+		});
+	}
 
 	
 	if(defaultConfig.setPrefix){
@@ -340,9 +416,8 @@ var hasTouch=function(){
 			pre = (Array.prototype.slice
 			.call(styles)
 			.join('') 
-			.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-		)[1],
-		dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+			.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1],
+			dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
 		window.publicInfo.prefix = {
 			dom: dom,
 			lowercase: pre,
@@ -406,28 +481,7 @@ var hasTouch=function(){
 	
 	
 	
-	//设置翻页事件
-	if(window.publicInfo.page.length>0){
-		
-		
-		
-		var mc = new Hammer(publicInfo.content[0]);
-		mc.get('swipe').set({velocity:0,threshold:30,direction:30});//修改滑动的速度与方向
-		
-		//下一页
-		mc.on("swipeup",function(){
-			
-			if(!publicInfo.pageStatus||defaultConfig.pageSwipeB[publicInfo.indexPage+'']===false||defaultConfig.pageSwipeB[publicInfo.indexPage+'']<0)return false;
-			publicInfo.pageStatus = 0;
-			J.pageFunc(publicInfo.indexPage+1);
-		});
-		//上一页
-		mc.on("swipedown",function(){
-			if(!publicInfo.pageStatus||defaultConfig.pageSwipeB[publicInfo.indexPage+'']===false||defaultConfig.pageSwipeB[publicInfo.indexPage+'']>0)return false;
-			publicInfo.pageStatus = 0;
-			J.pageFunc(publicInfo.indexPage-1);
-		});
-	}
+	
 	
 	if(document.querySelector('#fx')){
 		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
@@ -437,7 +491,41 @@ var hasTouch=function(){
 		$(this.parentNode).fadeOut(300);
 	});
 	
+	
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 })();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -463,3 +551,9 @@ Date.prototype.format = function(format)
    return format;   
 };
  
+/*var hasTouch=function(){
+	var touchObj={};
+	touchObj.isSupportTouch = "ontouchend" in document ? true : false;
+	touchObj.isEvent=touchObj.isSupportTouch?'touchstart':'click';
+	return touchObj.isEvent;
+};*/
