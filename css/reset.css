@@ -20,6 +20,8 @@ body,textarea,input,button,select,keygen,legend{font:12px/1.5 'Microsoft Yahei' 
 a,a:hover{color:#333;}
 
 
+html{-webkit-font-smoothing: antialiased;/*字体抗锯齿*/}
+
 body{	-webkit-user-select:none;/*文本不可选择*/
 	    -ms-user-select:none;
 		    user-select:none;
@@ -29,6 +31,8 @@ body{	-webkit-user-select:none;/*文本不可选择*/
 .abso{position:absolute;}			
 
 .boxSizing{box-sizing:border-box;}
+
+.close{width:60px;height:60px;line-height:50px;text-align:center;font-size:60px;color:#AC262C;background:#fff;border:4px solid #AC262C;border-radius:1000px;left:50%;top:50%;margin-left:238px;margin-top:-351px;}
 
 .center{
 justify-content:center;
@@ -40,7 +44,7 @@ display:-webkit-flex;}
 		
 /*提示分享层*/
 #fx{background:rgba(0,0,0,.9);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
-#fx img{display:block;margin:0 auto;}
+#fx img{float:right;}
 /*向上滑动提示箭头*/
 .pt-page-moveIconUp {display:none;height:auto;width:25px;position:absolute;z-index:99;left:50%;bottom:3%;margin-left:-12px;-webkit-animation: moveIconUp ease 1.5s both infinite;animation: moveIconUp ease 1.5s both infinite;}
 @-webkit-keyframes moveIconUp{
@@ -55,6 +59,15 @@ display:-webkit-flex;}
 }	
 
 
+/*选中文本的颜色*/
+::-moz-selection {background-color: rgba(230,224,203,0.3);color: #fff8e1;}
+::selection {background-color: rgba(230,224,203,0.3);color: #fff8e1;}
+
+.scrollBox{height:250px;overflow-y:auto;}
+.scrollBox::-webkit-scrollbar {width:10px;}
+.scrollBox::-webkit-scrollbar-thumb{background:#0375BE;border-radius:4px;}
+.scrollBox::-webkit-scrollbar-resizer  {background:#0375BE;}
+.scrollBox::-webkit-scrollbar-track-piece { background:rgba(0,0,0,.2);border-radius:4px;}
 
 
 
@@ -119,7 +132,7 @@ display:-webkit-flex;}
 	width:100%; 
 }
 
-.micBtn{display:none;position:absolute;right:23px;top:23px;width:35px;height:35px;background:url(../image/mc.png) no-repeat;cursor:pointer;z-index:99;}
+.micBtn{display:none;position:absolute;right:23px;top:23px;width:35px;height:35px;background:url(../image/mc.png) no-repeat;cursor:pointer;}
 .micBtn.hide{background-position:0 -100px;}
 .micBtn.show{background-position:0 0;}
 

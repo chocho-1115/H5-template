@@ -134,7 +134,7 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 			function endLoad(this_,eType,i) {
 				num++;
 				var progress = Math.floor(num*100/len);
-				if(progress>=100)progress=99;
+				if(progress>=100)progress=100;
 				srcArr[i]['result']=this_;
 				srcArr[i]['progress']=progress;
 				srcArr[i]['index']=i;
@@ -488,7 +488,7 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 		$('#fx').on('click',function(){$(this).fadeOut(500);});
 	}
 	$('.close').on('click',function(e){
-		$(this.parentNode).fadeOut(300);
+		$(this.parentNode).css('display','none');
 	});
 	
 	

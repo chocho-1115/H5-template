@@ -1,5 +1,5 @@
 // JavaScript Document
-
+//escape   unescape
 $(window).load(function(e) {
 	//缓存全局变量
 	var win = window,
@@ -44,7 +44,7 @@ $(window).load(function(e) {
    
    //横屏 
     //window.orientation = 0
-	JSeasy.rotateWindows({
+	/*JSeasy.rotateWindows({
 		winW:1136,//页面最大宽度 在手机中根据手机高度自动适配
 	    winH:640,//页面适配宽度
 	    callback: function(opt){
@@ -53,7 +53,7 @@ $(window).load(function(e) {
 		onRotate: function(opt){
 			
 		}
-	});
+	});*/
 	
    
 	
