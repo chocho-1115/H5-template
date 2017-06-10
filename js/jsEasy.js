@@ -2,16 +2,19 @@
 window.publicInfo = {
 	content : $('#content'),
 	page : $('.page'),
-	indexPage : -1,
+	indexPage : 0,
 	pageStatus : 0,//页面切换状态
 	pageCutover : true,//页面切换开关
 	pageLen : 0,//总共多少页
 	
 	prefix : null,
 	htmlFontSize : -1,
+	
+	
 };
 
 var defaultConfig = {
+	pageAnimateType : 'threeD',//fade translate threeD
 	setPrefix : false, //
 	isRem : false, //是否为rem适配
 	pageSwipeB : {
@@ -19,7 +22,7 @@ var defaultConfig = {
 		'1':1,
 		'2':0,
 		'3':-1,
-		'4':0,
+		'4':-1,
 		'5':0,
 		'6':-1,
 	},
@@ -32,7 +35,98 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 (function(){
 	
 	window.JSeasy = window.J = {};
+	
+	var pageAnimate = {
+		'fadeInit':function(){
+			TweenMax.set(publicInfo.page,{
+				display:'none',
+			});
+		},
+		'fade':function(oldPage,newPage,direction,time,callBack){
+			oldPage.fadeOut(time);
+			newPage.fadeIn(time,callBack);
+		},
+		'translateInit':function(){
+			TweenMax.set(publicInfo.page,{
+				display:'block',
+				y:publicInfo.page.height(),
+				opacity:1,
+				'z-index':1
+			});
+		},
+		'translate':function(oldPage,newPage,direction,time,callBack){
+			TweenMax.set(oldPage,{'z-index':2});
+			TweenMax.set(newPage,{y:oldPage.height()*direction,'z-index':3});
+			TweenMax.to(newPage,time/1000,{y:0,opacity:1,onComplete:function(){
+				TweenMax.set(oldPage,{'z-index':1});
+				callBack()
+			}});
+		},
+		'threeDInit':function(){
+			$('#content').css({
+				overflow:'visible',
+				transformOrigin: '50% 50% -'+window.innerHeight/2+'px',
+				transform: 'translate3d(0px, 0px, 0px) rotateX(45deg) rotateY(0deg)'
+			});
+			$('.page').css({
+				display: 'none',
+				'z-index':1,
+				transformOrigin: '50% 50% -'+window.innerHeight/2+'px',
+			});
+			
+			
+		},
+		'threeD':function(oldPage,newPage,direction,time,callBack){
+			
+			publicInfo.content.css({
+				transform: 'translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg)'
+			});
+			
+			oldPage.css({
+				display: 'block',
+				'z-index':2,
+				transform: 'translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg)'
+			});
+			
+			newPage.css({
+				display: 'block',
+				'z-index':3,
+				transform: 'translate3d(0px, 0px, 0px) rotateX('+(-90*direction)+'deg) rotateY(0deg)'
+			});
+			
+			var obj = {curImg: 0};
+			TweenMax.to(obj,time/1000,{
+				curImg:90*direction,
+				//roundProps: "curImg",  // 仅产生整数
+				ease: Power1.easeInOut,
+				//scaleX :
+				//ease: Back.easeIn.config(1.7),
+				onUpdate: function () {
+					publicInfo.content.css({
+						transform: 'translate3d(0px, 0px, 0px) rotateX('+ obj.curImg +'deg) rotateY(0deg)'
+					});
+				},
+				onComplete:function(){
+					TweenMax.set(oldPage,{'z-index':1});
+					oldPage.css({display: 'block'})
+					callBack()
+				}
+			});
+			
+			
+			
+			
+			
+			
+			
+			
+		}
 		
+	};
+	
+	pageAnimate[defaultConfig.pageAnimateType+'Init']();
+	
+	
 	JSeasy.EventUtil = {
 			//事件处理程序
 			addHandler:function(element,type,handler){
@@ -83,36 +177,44 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 		//defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false
 		JSeasy.pageFunc = function(num,opt){
 			
-			if(window.publicInfo.indexPage==num)return false
+			if(window.publicInfo.indexPage==num)return false;
 			
 			publicInfo.pageStatus = 0;
 			
 			var opt = opt || {},
+				direction = 1,
 				oldPage = publicInfo.page.eq(publicInfo.indexPage),
 				newPage = publicInfo.page.eq(num),
 				self = this;
-			
+				
+				
+			if(publicInfo.indexPage>num)direction = -1;
 			self.setUpJt(false);
 			if(opt.startCallback)opt.startCallback();
 			
+			pageAnimate[defaultConfig.pageAnimateType](
+				oldPage,
+				newPage,
+				direction,
+				opt.time===undefined?1000:opt.time,
+				function(){
+					oldPage.removeClass('show');
+					newPage.addClass('show');
+					if(opt.endCallback)opt.endCallback();
+					
+					if(opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false){
+						self.setUpJt(true);
+					}else{
+						self.setUpJt(opt.upJtB);
+					}
+					/*if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
+						self.setUpJt(true);
+					}*/
+					publicInfo.pageStatus = 1;
+				});
+			
 			publicInfo.indexPage = num;
-	
-			oldPage.fadeOut(500);
-			newPage.fadeIn(500,function(){
-				oldPage.removeClass('show');
-				newPage.addClass('show');
-				if(opt.endCallback)opt.endCallback();
-				
-				if(opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false){
-					self.setUpJt(true);
-				}else{
-					self.setUpJt(opt.upJtB);
-				}
-				/*if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
-					self.setUpJt(true);
-				}*/
-				publicInfo.pageStatus = 1;
-			});
+			
 		};
 		//预载器
 		JSeasy.preload = function(srcArr,callback,endCallback){
@@ -381,8 +483,6 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 (function () {
 	//设置翻页事件
 	if(window.publicInfo.page.length>0){
-		
-		console.log(false==0)
 		
 		var mc = new Hammer(publicInfo.content[0]);
 		mc.get('swipe').set({velocity:0,threshold:30,direction:30});//修改滑动的速度与方向

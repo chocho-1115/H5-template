@@ -14,7 +14,7 @@ $(window).load(function(e) {
 	//page信息
 	
 	//跳到第二页
-	J.pageFunc(1,{endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
+	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 
 
 	//添加背景音乐
