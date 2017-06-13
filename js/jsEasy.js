@@ -2,20 +2,23 @@
 window.publicInfo = {
 	content : $('#content'),
 	page : $('.page'),
-	indexPage : 0,
+	indexPage : -1,
 	pageStatus : 0,//页面切换状态
 	pageCutover : true,//页面切换开关
 	pageLen : 0,//总共多少页
 	
 	prefix : null,
 	htmlFontSize : -1,
+	
+	
 };
 
 var defaultConfig = {
+	pageAnimateType : 'threeD',//fade translate threeD
 	setPrefix : false, //
 	isRem : false, //是否为rem适配
 	pageSwipeB : {
-		'0':false,
+		'0':1,
 		'1':1,
 		'2':0,
 		'3':-1,
@@ -29,20 +32,125 @@ var defaultConfig = {
 
 window.publicInfo.pageLen = window.publicInfo.page.length;
 
-
-
-var hasTouch=function(){
-	var touchObj={};
-	touchObj.isSupportTouch = "ontouchend" in document ? true : false;
-	touchObj.isEvent=touchObj.isSupportTouch?'touchstart':'click';
-	return touchObj.isEvent;
-};
-
 (function(){
 	
+	var pageAnimate = {
+		'fadeInit':function(){
+			TweenMax.set(publicInfo.page,{
+				display:'none',
+				opacity:0
+			});
+		},
+		'fade':function(oldPage,newPage,direction,time,callBack){
+			
+			TweenMax.set(newPage,{display:'block'});
+			TweenMax.to(oldPage,time/1000,{opacity:0});
+			TweenMax.to(newPage,time/1000,{opacity:1,onComplete:function(){
+				TweenMax.set(oldPage,{display:'none'});
+				callBack()
+			}});
+			
+		},
+		'translateInit':function(){
+			TweenMax.set(publicInfo.page,{
+				display:'none',
+				y:publicInfo.page.height(),
+				opacity:1,
+				'z-index':1
+			});
+		},
+		'translate':function(oldPage,newPage,direction,time,callBack){
+			TweenMax.set(oldPage,{'z-index':2});
+			TweenMax.set(newPage,{display: 'block',y:oldPage.height()*direction,'z-index':3});
+			TweenMax.to(newPage,time/1000,{y:0,opacity:1,onComplete:function(){
+				TweenMax.set(oldPage,{display: 'none','z-index':1});
+				callBack()
+			}});
+		},
+		'threeDInit':function(){
+			
+			publicInfo.browserDetect = J.browserDetect();
+			var z = publicInfo.browserDetect.isIOS? -window.innerHeight/2:0;
+			
+			$('#content').css({
+				//overflow:'visible',
+				
+				'-webkit-transform-origin': 'center center -'+$('#content').height()/2+'px',
+				transformOrigin: 'center center -'+$('#content').height()/2+'px',
+				
+				'-weikit-transform': 'translate3d(0px, 0px, '+ z +'px) rotateX(0deg) rotateY(0deg)',
+				transform: 'translate3d(0px, 0px, '+ z +'px) rotateX(0deg) rotateY(0deg)',
+				
+				'-webkit-transform-style': 'preserve-3d',
+   				'transform-style': 'preserve-3d',
+				
+			});
+			$('.page').css({
+				display: 'none',
+				'z-index':1,
+			});
+			
+		},
+		'threeD':function(oldPage,newPage,direction,time,callBack){ 
+			
+			$('body').css({
+				'-webkit-perspective': '1200px',
+    		 	'perspective': '1200px'
+			});
+			
+			
+			var z = publicInfo.browserDetect.isIOS? -window.innerHeight/2:0;
+			
+			publicInfo.content.css({
+				transform: 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*direction)+'deg) rotateY(0deg)',
+				'-weikit-transform': 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*direction)+'deg) rotateY(0deg)',
+			});
+			
+			oldPage.css({
+				'z-index':2,
+				transform: 'translate3d(0px, '+ (-window.innerHeight*direction) +'px, 0px) rotateX('+(90*direction)+'deg) rotateY(0deg)',
+				'-weikit-transform': 'translate3d(0px, '+ (-window.innerHeight*direction) +'px, 0px) rotateX('+(90*direction)+'deg) rotateY(0deg)',
+				
+				'-webkit-transform-origin': 'center '+(direction==1?'bottom':'top'),
+				transformOrigin: 'center '+(direction==1?'bottom':'top'),
+			});
+			
+			newPage.css({
+				display: 'block',
+				'z-index':3,
+				transform: 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)',
+				'-weikit-transform': 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)'
+			});
+			var obj = {curImg: -90*direction};
+			TweenMax.to(obj,time/1000,{
+				curImg:0,
+				//roundProps: "curImg",  // 仅产生整数
+				ease: Power1.easeInOut,
+				ease: Power2.easeIn,
+				onUpdate: function () {
+					publicInfo.content.css({
+						transform: 'translate3d(0px, 0px, '+ z +'px) rotateX('+ obj.curImg +'deg) rotateY(0deg)',
+						'-weikit-transform': 'translate3d(0px, 0px, '+ z +'px) rotateX('+ obj.curImg +'deg) rotateY(0deg)'
+					});
+				},
+				onComplete:function(){
+					TweenMax.set(oldPage,{'z-index':1});
+					oldPage.css({display: 'none'})
+					callBack()
+					$('body').css({
+						'-webkit-perspective': 'none',
+						'perspective': 'none'
+					});
+					
+				}
+			});
+		}
+	};
+	
 	window.JSeasy = window.J = {};
-		
+	
 	JSeasy.EventUtil = {
+				
 			//事件处理程序
 			addHandler:function(element,type,handler){
 				if(element.addEventListener){element.addEventListener(type,handler,false)}//DOM2
@@ -82,6 +190,25 @@ var hasTouch=function(){
 			}
 		};
 		
+		
+		
+		JSeasy.browserDetect = function() {
+			var obj = {
+					agent : window.navigator.userAgent
+				};
+			
+			obj.isWindowPhone = (obj.agent.indexOf("IEMobile") > -1) || (obj.agent.indexOf("Windows Phone") > -1);
+			obj.isFirefox = (obj.agent.indexOf("Firefox") > -1);
+			obj.isOpera = (window.opera != null);
+			obj.isChrome = (obj.agent.indexOf("Chrome") > -1);  // NOTE that Chrome on Android returns true but is a completely different browser with different abilities
+			obj.isIOS = (obj.agent.indexOf("iPod") > -1 || obj.agent.indexOf("iPhone") > -1 || obj.agent.indexOf("iPad") > -1) && !obj.isWindowPhone;
+			obj.isAndroid = (obj.agent.indexOf("Android") > -1) && !obj.isWindowPhone;
+			obj.isBlackberry = (obj.agent.indexOf("Blackberry") > -1);
+			return obj;
+			
+			//throw "BrowserDetect cannot be instantiated";
+		},
+		
 		JSeasy.setUpJt = function (B){
 			if(B){
 				$('#upJt').show();
@@ -92,44 +219,69 @@ var hasTouch=function(){
 		//defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false
 		JSeasy.pageFunc = function(num,opt){
 			
-			//if(window.publicInfo.indexPage===num)return false;
+			if(window.publicInfo.indexPage==num)return false;
 			
-			if(!window.publicInfo.pageCutover)return false;
+			publicInfo.pageStatus = 0;
 			
 			var opt = opt || {},
+				direction = 1,
 				oldPage = publicInfo.page.eq(publicInfo.indexPage),
 				newPage = publicInfo.page.eq(num),
 				self = this;
-			
+				
+				
+			if(publicInfo.indexPage>num)direction = -1;
 			self.setUpJt(false);
 			if(opt.startCallback)opt.startCallback();
+			if(publicInfo.callback&&publicInfo.callback[num+'init'])publicInfo.callback[num+'init']();
+			
+			pageAnimate[defaultConfig.pageAnimateType](
+				oldPage,
+				newPage,
+				direction,
+				opt.time===undefined?800:opt.time,
+				function(){
+					oldPage.removeClass('show');
+					newPage.addClass('show');
+					
+					if(publicInfo.callback&&publicInfo.callback[num])publicInfo.callback[num]();
+					
+					if(opt.endCallback)opt.endCallback();
+					
+					var d = defaultConfig.pageSwipeB[num]
+
+					if(opt.upJtB===undefined&&(d===0||d===1)){
+						self.setUpJt(true);
+					}else{
+						self.setUpJt(opt.upJtB);
+					}
+					/*if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
+						self.setUpJt(true);
+					}*/
+					publicInfo.pageStatus = 1;
+				});
 			
 			publicInfo.indexPage = num;
-	
-			oldPage.fadeOut(500);
-			newPage.fadeIn(500,function(){
-				oldPage.removeClass('show');
-				newPage.addClass('show');
-				if(opt.endCallback)opt.endCallback();
-				publicInfo.pageStatus = 1;
-				if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
-					self.setUpJt(true);
-				}
-			});
+			
 		};
 		//预载器
-		JSeasy.preload = function(srcArr,callback,endCallback){
+		JSeasy.preload = function(srcArr,callback,endCallback,minTime){
 			srcArr = typeof(srcArr)=='string' ? [srcArr] : srcArr;
 			if(srcArr.length==0)endCallback({});
 			var num = 0,
-				imgArrObj = {};
-			for(var i=0,len=srcArr.length;i<len;i++){
+				imgArrObj = {},
+				len = srcArr.length,
+				t = minTime/len,
+				st = (new Date()).getTime();
+			for(var i=0;i<len;i++){
 				(function(i){
 					var newImg = new Image();
 					imgArrObj[srcArr[i].id||i+''] = newImg;
 					newImg.onload = newImg.onerror = function(e) {
 						e = e||window.event;
-						endLoad(this,e.type,i);
+						setTimeout(function(){
+							endLoad(this,e.type,i);
+						},t*i-( (new Date()).getTime() -st));
 					};
 					newImg.src = srcArr[i].path;
 				})(i);
@@ -137,7 +289,7 @@ var hasTouch=function(){
 			function endLoad(this_,eType,i) {
 				num++;
 				var progress = Math.floor(num*100/len);
-				if(progress>=100)progress=99;
+				if(progress>=100)progress=100;
 				srcArr[i]['result']=this_;
 				srcArr[i]['progress']=progress;
 				srcArr[i]['index']=i;
@@ -150,7 +302,7 @@ var hasTouch=function(){
 			
 		};
 		
-		JSeasy.lazyLoad = function(selector,callback,endCallback){
+		JSeasy.lazyLoad = function(selector,callback,endCallback,minTime){
 			var doc = document,
 				assets = [],
 				ele = doc.querySelectorAll(selector);
@@ -179,7 +331,7 @@ var hasTouch=function(){
 				if(callback)callback(item);
 			},function(result){
 				if(endCallback)endCallback(result);
-			})
+			},minTime)
 			
 		};
 	
@@ -241,6 +393,21 @@ var hasTouch=function(){
 			if(result==null)return false;
 			return true;
 		};
+		
+		
+		JSeasy.isEmail = function (str){
+			if(str==null||str=="") return false;
+
+			var result = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  			if(result.test(str)){
+				return true;
+			}else{
+				return false;
+			}
+
+		};
+		
+		
 		JSeasy.addMp4 = function(opt){
 			var audioEle = document.createElement('audio');
 			audioEle.setAttribute('src',opt.src);
@@ -299,7 +466,7 @@ var hasTouch=function(){
 		
 		function stopDefaultScroll(e){
 			e.preventDefault();
-			e.stopPropagetion();
+			e.stopPropagation();
 			//return false;
 		}
 		//是否开启 触摸滚动页面
@@ -319,13 +486,81 @@ var hasTouch=function(){
 				return ( Min + Math.random()*(Max-Min) )
 			}
 		};
-	
+		 
+		JSeasy.rotateWindows = function(opt){
+			opt = opt||{};
+			var isSet = false,
+				winW = opt.winW||1136, winH = opt.winH||640;
+			
+			$('body').addClass('horizontalWindows');//水平窗口
+			
+			changeFunc();
+			window.addEventListener('orientationchange', changeFunc);
+			function changeFunc(event){
+				//pc端
+				if(window.orientation===undefined){
+					$('.content').css({width:winW,height:winH});
+					opt.callback&&opt.callback({winW:winW,winH:winH});
+					return false
+				}
+				
+				if ( window.orientation === 180 || window.orientation === 0 ) {//竖着的
+					if(!isSet){
+						isSet = true;
+						winW = $('body').height();//window.innerHeight;
+						$('.content').css({
+							position:'absolute',
+							left:'50%',
+							top:'50%',
+							transform:'rotate(90deg)',
+							width:winW,
+							height:winH,
+							marginLeft:winW/-2,
+							marginTop:winH/-2
+						})
+						opt.onRotate&&opt.onRotate({winW:winW,winH:winH});
+						opt.callback&&opt.callback({winW:winW,winH:winH});
+					}
+					$('.rotateWindows_tips').css('display','none');
+				}else if( window.orientation == 90 || window.orientation == -90 ) {
+					$('.rotateWindows_tips').css('display','block');
+				}
+				
+			}
 
-}());
+		}
+		
+		
+		
+		
+	pageAnimate[defaultConfig.pageAnimateType+'Init']();
+
 	
-//////////////////////////////////////////
-(function () {
 	
+	
+	
+	
+	//设置翻页事件
+	if(window.publicInfo.page.length>0){
+		
+		var mc = new Hammer(publicInfo.content[0]);
+		mc.get('swipe').set({velocity:0,threshold:30,direction:30});//修改滑动的速度与方向
+		
+		//下一页
+		mc.on("swipeup",function(){
+			if(!publicInfo.pageStatus)return false;
+			if(!publicInfo.pageCutover)return false;
+			if(defaultConfig.pageSwipeB[publicInfo.indexPage]===false||defaultConfig.pageSwipeB[publicInfo.indexPage]<0)return false;
+			J.pageFunc(publicInfo.indexPage+1);
+		});
+		//上一页
+		mc.on("swipedown",function(){
+			if(!publicInfo.pageStatus)return false;
+			if(!publicInfo.pageCutover)return false;
+			if(defaultConfig.pageSwipeB[publicInfo.indexPage]===false||defaultConfig.pageSwipeB[publicInfo.indexPage]>0)return false;
+			J.pageFunc(publicInfo.indexPage-1);
+		});
+	}
 
 	
 	if(defaultConfig.setPrefix){
@@ -340,9 +575,8 @@ var hasTouch=function(){
 			pre = (Array.prototype.slice
 			.call(styles)
 			.join('') 
-			.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-		)[1],
-		dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+			.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1],
+			dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
 		window.publicInfo.prefix = {
 			dom: dom,
 			lowercase: pre,
@@ -406,38 +640,51 @@ var hasTouch=function(){
 	
 	
 	
-	//设置翻页事件
-	if(window.publicInfo.page.length>0){
-		
-		
-		
-		var mc = new Hammer(publicInfo.content[0]);
-		mc.get('swipe').set({velocity:0,threshold:30,direction:30});//修改滑动的速度与方向
-		
-		//下一页
-		mc.on("swipeup",function(){
-			
-			if(!publicInfo.pageStatus||defaultConfig.pageSwipeB[publicInfo.indexPage+'']===false||defaultConfig.pageSwipeB[publicInfo.indexPage+'']<0)return false;
-			publicInfo.pageStatus = 0;
-			J.pageFunc(publicInfo.indexPage+1);
-		});
-		//上一页
-		mc.on("swipedown",function(){
-			if(!publicInfo.pageStatus||defaultConfig.pageSwipeB[publicInfo.indexPage+'']===false||defaultConfig.pageSwipeB[publicInfo.indexPage+'']>0)return false;
-			publicInfo.pageStatus = 0;
-			J.pageFunc(publicInfo.indexPage-1);
-		});
-	}
+	
 	
 	if(document.querySelector('#fx')){
 		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
 		$('#fx').on('click',function(){$(this).fadeOut(500);});
 	}
 	$('.close').on('click',function(e){
-		$(this.parentNode).fadeOut(300);
+		$(this.parentNode).css('display','none');
 	});
 	
+	
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 })();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -463,3 +710,9 @@ Date.prototype.format = function(format)
    return format;   
 };
  
+/*var hasTouch=function(){
+	var touchObj={};
+	touchObj.isSupportTouch = "ontouchend" in document ? true : false;
+	touchObj.isEvent=touchObj.isSupportTouch?'touchstart':'click';
+	return touchObj.isEvent;
+};*/
