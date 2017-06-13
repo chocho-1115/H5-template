@@ -22,7 +22,7 @@ var defaultConfig = {
 		'1':1,
 		'2':0,
 		'3':-1,
-		'4':0,
+		'4':-1,
 		'5':0,
 		'6':-1,
 	},
@@ -149,6 +149,7 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 	
 	window.JSeasy = window.J = {};
 	
+
 	JSeasy.EventUtil = {
 				
 			//事件处理程序
@@ -251,6 +252,27 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 					var d = defaultConfig.pageSwipeB[num]
 
 					if(opt.upJtB===undefined&&(d===0||d===1)){
+						self.setUpJt(true);
+					}else{
+						self.setUpJt(opt.upJtB);
+					}
+					/*if(opt.upJtB==true || (opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false)){
+						self.setUpJt(true);
+					}*/
+					publicInfo.pageStatus = 1;
+				});
+			
+			pageAnimate[defaultConfig.pageAnimateType](
+				oldPage,
+				newPage,
+				direction,
+				opt.time===undefined?1000:opt.time,
+				function(){
+					oldPage.removeClass('show');
+					newPage.addClass('show');
+					if(opt.endCallback)opt.endCallback();
+					
+					if(opt.upJtB===undefined&&defaultConfig.pageSwipeB[publicInfo.indexPage]!=-1&&defaultConfig.pageSwipeB[publicInfo.indexPage]!==false){
 						self.setUpJt(true);
 					}else{
 						self.setUpJt(opt.upJtB);
@@ -529,17 +551,16 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 			}
 
 		}
+
 		
 		
 		
 		
 	pageAnimate[defaultConfig.pageAnimateType+'Init']();
 
+
 	
-	
-	
-	
-	
+
 	//设置翻页事件
 	if(window.publicInfo.page.length>0){
 		
