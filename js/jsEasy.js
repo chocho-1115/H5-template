@@ -73,7 +73,7 @@ window.publicInfo.pageLen = window.publicInfo.page.length;
 			var z = publicInfo.browserDetect.isIOS? -window.innerHeight/2:0;
 			
 			$('#content').css({
-				//overflow:'visible',
+				overflow:'visible',
 				
 				'-webkit-transform-origin': 'center center -'+$('#content').height()/2+'px',
 				transformOrigin: 'center center -'+$('#content').height()/2+'px',
