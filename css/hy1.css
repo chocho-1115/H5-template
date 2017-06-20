@@ -2,12 +2,43 @@
 /* CSS Document */
 
 
-.coy{height:50px;line-height:50px;text-align:center;color:#fff;background:#323256;border-top:3px solid #E50150;}
+.logo{left:20px;top:20px;}
+
 
 .page0 {background:#999}
 .page1 {background:#966}
 .page2 {background:#669}
 .page3 {background:#696}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .info{display:none;width:640px;position:absolute;left:50%;top:0;margin-left:-320px;height:100%;}
 .info .close{position:absolute;left:522px;width:48px;top:191px;height:48px;cursor:pointer;}
@@ -17,10 +48,7 @@
 .info .text3{top:598px;}
 .info .btn{position:absolute;left:258px;width:128px;top:697px;height:51px;cursor:pointer;    background:#966;opacity:.5}
 
-
-.coy{height:50px;line-height:50px;text-align:center;color:#333;background:#FEE101;}
-
-
+.coy{height:50px;line-height:50px;text-align:center;color:#fff;background:#323256;border-top:3px solid #E50150;}
 
 
 

@@ -22,7 +22,6 @@ $(window).load(function(e) {
 	
 	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 
-
 	//添加背景音乐
 	var audioEle = J.addMp4({
 		src:'media/bj.mp3',
@@ -45,8 +44,48 @@ $(window).load(function(e) {
    //获取 10-20的随机整数
    JSeasy.getRandomNum(10,20,true)
    
-   //验证是否为手机号码
-   JSeasy.isMobile('15211142729')
+   /*window.J.lazyLoad('.lazy_load',function(item){},function(assets){
+		var $loadNum = $('#set_load_num');
+		J.pageFunc(0,{endCallback:function(){
+			window.J.lazyLoad('.lazy',function(item){
+				$loadNum.html(item.progress+'%');
+			},function(assets){
+				$loadNum.html(100+'%');
+				setTimeout(function(){
+					J.pageFunc(1);
+				},800);
+			});
+		}})//显示第indexPage页
+		
+	});*/
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    //横屏 
     //window.orientation = 0
@@ -82,20 +121,7 @@ $(window).load(function(e) {
 	
 	/*
 	
-	window.J.lazyLoad('.lazy_load',function(item){},function(assets){
-		var $loadNum = $('#set_load_num');
-		J.pageFunc(0,{endCallback:function(){
-			window.J.lazyLoad('.lazy',function(item){
-				$loadNum.html(item.progress+'%');
-			},function(assets){
-				$loadNum.html(100+'%');
-				setTimeout(function(){
-					J.pageFunc(1);
-				},800);
-			});
-		}})//显示第indexPage页
-		
-	});
+	
 	
 	
 	
