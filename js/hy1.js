@@ -5,16 +5,22 @@ $(window).load(function(e) {
 	var win = window,
 	    doc = document;
 
-	/*if(window.innerHeight<1008){
-		var w = 1008*window.innerWidth/window.innerHeight;
-		//document.getElementById('content').style.width = w+'px';
-		document.getElementById('viewEle').setAttribute('content','height=1008,width='+w+', user-scalable=no,target-densitydpi = device-dpi');
-	}
-*/
-	//page信息
-	
 	//跳到第二页
-	J.pageFunc(0,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
+	H5Init({
+		pageAnimateType: 'threeD',//fade translate threeD
+		viewportHeight : 1008,
+		pageSwipeB : {
+			'0':1,
+			'1':1,
+			'2':0,
+			'3':-1,
+			'4':0,
+			'5':0,
+			'6':-1,
+		},
+	})
+	
+	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 
 
 	//添加背景音乐
@@ -28,7 +34,7 @@ $(window).load(function(e) {
 		audioBtn:document.getElementById('micBtn'),
 		audioEle:audioEle,
 		autoplay:true
-	});	
+	});
 	
    //关闭页面下拉刷新
    JSeasy.setScroll(false)//
