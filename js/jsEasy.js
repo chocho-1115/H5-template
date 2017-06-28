@@ -33,11 +33,10 @@ function H5Init(opt){
 	
 	JSeasy.pageAnimate[publicInfo.pageAnimateType+'Init']();
 	
-	
-	if(publicInfo.viewportHeight&&window.innerHeight<1008){
-		var w = 1008*window.innerWidth/window.innerHeight;
+	if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
+		var w = publicInfo.viewportHeight*window.innerWidth/window.innerHeight;
 		//document.getElementById('content').style.width = w+'px';
-		document.getElementById('viewEle').setAttribute('content','height=1008,width='+w+', user-scalable=no,target-densitydpi = device-dpi');
+		document.getElementById('viewEle').setAttribute('content','height='+publicInfo.viewportHeight+',width='+w+', user-scalable=no,target-densitydpi = device-dpi');
 	}
 	
 	

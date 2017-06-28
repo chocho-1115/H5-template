@@ -8,7 +8,7 @@ $(window).load(function(e) {
 	//跳到第二页
 	H5Init({
 		pageAnimateType: 'threeD',//fade translate threeD
-		viewportHeight : 1008,
+		//viewportHeight : 1108,
 		pageSwipeB : {
 			'0':1,
 			'1':1,
