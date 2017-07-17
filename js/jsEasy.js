@@ -249,8 +249,11 @@ Date.prototype.format = function(format)
 	//publicInfo.pageSwipeB[publicInfo.indexPage]!=-1&&publicInfo.pageSwipeB[publicInfo.indexPage]!==false
 	JSeasy.pageFunc = function(num,opt){
 		
-		if(window.publicInfo.indexPage==num)return false;
-		
+		if(window.publicInfo.indexPage==num){
+			if(opt.startCallback)opt.startCallback();
+			if(opt.endCallback)opt.endCallback();
+			return false;
+		}
 		publicInfo.pageStatus = 0;
 		
 		var opt = opt || {},
