@@ -22,6 +22,8 @@ $(window).load(function(e) {
 	
 	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 
+
+	setTimeout(function(){J.pageFunc(1,{endCallback:function(){alert(0)}})},3000)
 	//添加背景音乐
 	var audioEle = J.addMp4({
 		src:'media/bj.mp3',
@@ -34,6 +36,16 @@ $(window).load(function(e) {
 		audioEle:audioEle,
 		autoplay:true
 	});
+    document.addEventListener("WeixinJSBridgeReady", function () {  
+        audioEle.play();
+		$('#micBtn').addClass('show');
+    }, false);  
+    document.addEventListener('YixinJSBridgeReady', function() {  
+        audioEle.play(); 
+        $('#micBtn').addClass('show');
+    }, false); 
+	
+	
 	
    //关闭页面下拉刷新
    JSeasy.setScroll(false)//
