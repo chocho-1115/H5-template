@@ -40,7 +40,7 @@
         </div>
     </div>
   
-    
+    <!-- disabled="true"　readOnly="true"-->
   	
     
     
@@ -156,5 +156,25 @@ $(function(){
 			link:'',
 			success:null
 	});
+    
+    //<input class="abso fileimg fileimg1" data=1 accept="image/gif, image/jpeg, image/jpg, image/png" type="file" />
+    document.querySelector('.fileimg1').addEventListener('change', function () {
+		lrz(this.files[0])
+			.then(function (rst) {
+				// 处理成功会执行
+				console.log(rst);
+				$(".page3 .pic1").css('background-image','url('+rst.base64+')');
+				
+				window.picType.bj = rst.base64;
+				window.picType.bjB = true;
+			})
+			.catch(function (err) {
+				// 处理失败会执行
+			})
+			.always(function () {
+				// 不管是成功失败，都会执行
+			});
+	});
+    
 });
 </script>-->

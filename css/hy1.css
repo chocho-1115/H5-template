@@ -1,6 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 
+.dw.dw-ltr{-webkit-transform:scale(1.5,1.5);transform:scale(1.5,1.5)}
 
 .logo{left:20px;top:20px;}
 

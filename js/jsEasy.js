@@ -296,50 +296,73 @@ Date.prototype.format = function(format)
 		
 	};
 	//预载器
-	JSeasy.preload = function(srcArr,callback,endCallback,minTime){
-		srcArr = typeof(srcArr)=='string' ? [srcArr] : srcArr;
-		if(srcArr.length==0)endCallback({});
+	JSeasy.preload = function(srcArr, params){
+		
+		if(typeof(srcArr) == 'string'){
+			srcArr = [{path:srcArr}];
+		};
+		
+		if(srcArr.length==0){params.complete&&params.complete({});return false};
+		//console.log(srcArr)
+		
 		var num = 0,
 			imgArrObj = {},
+			minTime = params.minTime || 0,
 			len = srcArr.length,
 			t = minTime/len,
 			st = (new Date()).getTime();
-		for(var i=0;i<len;i++){
+			
+		for(var i = 0; i < len; i++){
+			
 			(function(i){
+				
 				var newImg = new Image();
-				imgArrObj[srcArr[i].id||i+''] = newImg;
+				
 				newImg.onload = newImg.onerror = function(e) {
-					e = e||window.event;
+					e = e || window.event;
+					var self = this;
 					setTimeout(function(){
-						endLoad(this,e.type,i);
+						endLoad(self,e.type,i);
 					},t*i-( (new Date()).getTime() -st));
 				};
+				
+				if(typeof(srcArr[i]) == 'string') srcArr[i] = {path:srcArr[i],name:i};
+				
 				newImg.src = srcArr[i].path;
-			})(i);
+				
+			}(i));
 		}
-		function endLoad(this_,eType,i) {
+		
+		
+		function endLoad(this_, eType, i) {
 			num++;
-			var progress = Math.floor(num*100/len);
-			if(progress>=100)progress=100;
-			srcArr[i]['result']=this_;
-			srcArr[i]['progress']=progress;
-			srcArr[i]['index']=i;
-			srcArr[i]['status']=eType=='load'?200:'加载失败';
-			callback(srcArr[i]);
-			if(num===len){
-				endCallback(imgArrObj);
-			}
+			var progress = num / len;
+			
+			srcArr[i]['result'] = this_;
+			srcArr[i]['progress'] = progress;
+			srcArr[i]['index'] = i;
+			srcArr[i]['status'] = eType == 'load' ? 200 : 'Failed to load';
+			
+			imgArrObj[srcArr[i].name] = this_;
+			
+			params.fileload&&params.fileload(srcArr[i]);
+			
+			if(num === len) params.complete&&params.complete(imgArrObj);
 		}
+		
+		
+		
 		
 	};
 	
-	JSeasy.lazyLoad = function(selector,callback,endCallback,minTime){
+	JSeasy.lazyLoad = function(selector,params){
 		var doc = document,
 			assets = [],
 			ele = doc.querySelectorAll(selector);
 		
 		for(var i=0,len=ele.length;i<len;i++){
-			var obj = {path:'',type:'',ele:ele[i]}
+			var id = i;
+			var obj = {path:'',type:'',ele:ele[i],name:'_'+i}
 			if(ele[i].nodeName === 'IMG'){
 				obj.type = 'img';
 			}else{
@@ -350,19 +373,23 @@ Date.prototype.format = function(format)
 				assets.push(obj)
 			}
 		};
-		
-		window.J.preload(assets,function(item){
-			if(item.status===200){
-				if(item.type=='img'){
-					item.ele.setAttribute('src',item.path);
-				}else if(item.type=='bj'){
-					item.ele.style.backgroundImage = 'url('+item.path+')';
+		//console.log(assets)
+		window.J.preload(assets,{
+			fileload:function(item){
+				if(item.status===200){
+					if(item.type=='img'){
+						item.ele.setAttribute('src',item.path);
+					}else if(item.type=='bj'){
+						item.ele.style.backgroundImage = 'url('+item.path+')';
+					}
 				}
-			}
-			if(callback)callback(item);
-		},function(result){
-			if(endCallback)endCallback(result);
-		},minTime)
+				if(params.fileload)params.fileload(item);
+			},
+			complete:function(result){
+				if(params.complete)params.complete(result);
+			},
+			minTime:params.minTime
+		})
 		
 	};
 	
