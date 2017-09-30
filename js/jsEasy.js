@@ -36,7 +36,8 @@ function H5Init(opt){
 	if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
 		var w = publicInfo.viewportHeight*window.innerWidth/window.innerHeight;
 		//document.getElementById('content').style.width = w+'px';
-		document.getElementById('viewEle').setAttribute('content','height='+publicInfo.viewportHeight+',width='+w+', user-scalable=no,target-densitydpi = device-dpi');
+		//document.getElementById('viewEle').setAttribute('content','height='+publicInfo.viewportHeight+',width='+w+', user-scalable=no,target-densitydpi = device-dpi');
+		document.getElementById('viewEle').setAttribute('content','width='+w+', user-scalable=no,target-densitydpi = device-dpi');
 	}
 	
 	
