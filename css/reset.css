@@ -32,6 +32,34 @@ body{	-webkit-user-select:none;/*文本不可选择*/
 
 			
 			}
+			
+			
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #fff; opacity:1; 
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #fff;opacity:1;
+}
+
+input:-ms-input-placeholder{
+    color: #fff;opacity:1;
+}
+
+input::-webkit-input-placeholder{
+    color: #fff;opacity:1;
+}		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 .abso{position:absolute;}			
 
 .boxSizing{box-sizing:border-box;}

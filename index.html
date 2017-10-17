@@ -94,25 +94,11 @@
         湘ICP备13002230号
 </div>-->
 
+<input class="abso upimg" id="upimg" accept="image/gif, image/jpeg, image/jpg, image/png" type="file" style='left:100px;top:100px;width:100px;height:100px;opacity:0.5'/>
+
 <div class="rotateWindows_tips"></div>
 
-<!--<div style='display:none;'>
-	<script language="javascript" type="text/javascript" src="http://js.users.51.la/18208555.js"></script>
-</div>
 
-
-
-<script>
-    var _hmt = _hmt || [];
-    (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?1ebea0faf73b5d5bac6ef1b97ba37bcd";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-
--->
 
 </body>
 </html>
@@ -124,14 +110,13 @@
 <script src="js/jsEasy.js"></script>
 <script src="js/hy1.js"></script>
 
-<!--
-
-http://www.oo11.net/jssdk.js
-http://www.seth5.com/jssdk.js
-
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script src="http://www.hylinkcs.com/lab/jssdk.js" charset="utf-8"></script>
+<script src="http://www.seth5.com/jssdk.js" charset="utf-8"></script>
 <script>
+
+//http://www.oo11.net/jssdk.js
+//http://www.hylinkcs.com/lab/jssdk.js
+
 function setFX(opt){
 
          var wx={
@@ -149,6 +134,7 @@ function setFX(opt){
 }
 
 $(function(){
+	
 	setFX({
 			title:'主标题',
 			desc:'副标题',
@@ -157,24 +143,9 @@ $(function(){
 			success:null
 	});
     
-    //<input class="abso fileimg fileimg1" data=1 accept="image/gif, image/jpeg, image/jpg, image/png" type="file" />
-    document.querySelector('.fileimg1').addEventListener('change', function () {
-		lrz(this.files[0])
-			.then(function (rst) {
-				// 处理成功会执行
-				console.log(rst);
-				$(".page3 .pic1").css('background-image','url('+rst.base64+')');
-				
-				window.picType.bj = rst.base64;
-				window.picType.bjB = true;
-			})
-			.catch(function (err) {
-				// 处理失败会执行
-			})
-			.always(function () {
-				// 不管是成功失败，都会执行
-			});
-	});
+    
+    
+	
     
 });
-</script>-->
+</script>

@@ -85,12 +85,12 @@ $(window).load(function(e) {
 	
 	
 	
-	
-	
-	
-	
-	
-	
+	JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
+		console.log(reader)
+		$('.win1 .pic').css({'background-image':'url('+reader.result+')',opacity:1});
+		
+		
+	});
 	
 	
 	

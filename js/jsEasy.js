@@ -454,6 +454,29 @@ Date.prototype.format = function(format)
 	};
 	
 	
+	JSeasy.initUpImg = function(btnEle,endCallback){
+		btnEle.addEventListener('change', function () {
+		
+			var file = this.files[0]; //获取file对象
+			//判断file的类型是不是图片类型。
+			if(!/image\/\w+/.test(file.type)){ 
+				alert("文件必须为图片！"); 
+				return false; 
+			} 
+			
+			var reader = new FileReader(); //声明一个FileReader实例
+			
+			//最后在onload事件中，获取到成功读取的文件内容，并以插入一个img节点的方式显示选中的图片
+			reader.onload = function(e){ 
+				//alert(reader.readyState)
+				if(endCallback)endCallback(this)
+				
+			} 
+			reader.readAsDataURL(file); //调用readAsDataURL方法来读取选中的图像文件
+		
+		});	
+	};
+	
 	JSeasy.addMp4 = function(opt){
 		var audioEle = document.createElement('audio');
 		audioEle.setAttribute('src',opt.src);
