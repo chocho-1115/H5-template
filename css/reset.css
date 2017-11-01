@@ -77,6 +77,11 @@ display:-webkit-flex;}
 /*提示分享层*/
 #fx{background:rgba(0,0,0,.9);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
 #fx img{float:right;}
+
+#tipsBox{background:rgba(0,0,0,.9);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
+#tipsBox span{background:#ccc;padding:20px;border-radius:4px;color:#333;font-size:25px;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}
+
+
 /*向上滑动提示箭头*/
 .pt-page-moveIconUp {display:none;height:auto;width:25px;position:absolute;z-index:99;left:50%;bottom:3%;margin-left:-12px;-webkit-animation: moveIconUp ease 1.5s both infinite;animation: moveIconUp ease 1.5s both infinite;}
 @-webkit-keyframes moveIconUp{

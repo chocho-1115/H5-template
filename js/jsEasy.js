@@ -45,6 +45,12 @@ function H5Init(opt){
 		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
 		$('#fx').on('click',function(){$(this).fadeOut(500);});
 	}
+	if(document.querySelector('#tipsBox')){
+		$('#tipsBox').on('click',function(){
+			if($('#tipsBox').attr('close')=='true')$(this).fadeOut(500);
+		});
+	}
+	
 	$('.close').on('click',function(e){
 		$(this.parentNode).css('display','none');
 	});
@@ -247,6 +253,14 @@ Date.prototype.format = function(format)
 			$('#upJt').hide();
 		}
 	};
+	
+	JSeasy.tipsText = function (text,closeB){
+		closeB = closeB===undefined?true:closeB;
+		$('#tipsBox span').html(text)
+		$('#tipsBox').attr('close',closeB).fadeIn(300)
+	};
+	
+	
 	//publicInfo.pageSwipeB[publicInfo.indexPage]!=-1&&publicInfo.pageSwipeB[publicInfo.indexPage]!==false
 	JSeasy.pageFunc = function(num,opt){
 		

@@ -54,7 +54,9 @@ $(window).load(function(e) {
 	JSeasy.getQueryString('openid')
 	
 	//获取 10-20的随机整数
-	JSeasy.getRandomNum(10,20,true)
+	JSeasy.getRandomNum(10,20,false)
+	
+	JSeasy.tipsText('请输入您的昵称')
 	
 	/*	window.J.lazyLoad('.lazy_load',{
 		fileload:function(item){console.log(item)},
