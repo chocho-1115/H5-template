@@ -8,7 +8,8 @@ window.publicInfo = {
 	pageCutover : true,//页面切换开关
 	pageLen : 0,//总共多少页
 	
-	viewportHeight : null,
+	//viewportHeight : null,
+	scale : 1,
 	prefix : null,
 	htmlFontSize : -1,
 	
@@ -23,7 +24,8 @@ function H5Init(opt){
 	
 	publicInfo.pageSwipeB = opt.pageSwipeB;
 	
-	publicInfo.viewportHeight = opt.viewportHeight||null;
+	//publicInfo.viewportHeight = opt.viewportHeight||null;
+	publicInfo.scale = opt.scale||1;
 	publicInfo.pageAnimateType = opt.pageAnimateType||'fade';
 	publicInfo.isRem = opt.isRem||false;
 	publicInfo.setPrefix = opt.setPrefix||false;
@@ -33,13 +35,18 @@ function H5Init(opt){
 	
 	JSeasy.pageAnimate[publicInfo.pageAnimateType+'Init']();
 	
-	if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
+	/*if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
 		var w = publicInfo.viewportHeight*window.innerWidth/window.innerHeight;
 		//document.getElementById('content').style.width = w+'px';
 		//document.getElementById('viewEle').setAttribute('content','height='+publicInfo.viewportHeight+',width='+w+', user-scalable=no,target-densitydpi = device-dpi');
 		document.getElementById('viewEle').setAttribute('content','width='+w+', user-scalable=no,target-densitydpi = device-dpi');
-	}
+	}*/
 	
+	document.getElementById('viewEle').setAttribute('content','width='+(opt.viewportWidth||640)+', user-scalable=no,target-densitydpi = device-dpi');
+
+	if(publicInfo.scale!=1){
+		$('body').css('zoom',publicInfo.scale)
+	}
 	
 	if(document.querySelector('#fx')){
 		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
@@ -227,7 +234,14 @@ Date.prototype.format = function(format)
 			else{element['on'+type]=null;}
 		}
 	};
-	
+	JSeasy.throttle = function (method,context){
+			//console.log(method.tId)
+			if(method.tId)clearTimeout(method.tId);
+			//console.log(method.tId)
+			method.tId = setTimeout(function(){
+				method.call(context);
+			},100);
+	};
 	
 	JSeasy.browserDetect = function() {
 		var obj = {
@@ -570,6 +584,7 @@ Date.prototype.format = function(format)
 	};
 	 
 	JSeasy.rotateWindows = function(opt){
+
 		opt = opt||{};
 		var isSet = false,
 			winW = opt.winW||1136, winH = opt.winH||640;
