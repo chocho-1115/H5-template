@@ -1,8 +1,5 @@
 // JavaScript Document
 //escape   unescape
-
-
-
 $(window).load(function(e) {
 	//缓存全局变量
 	var win = window,
@@ -11,33 +8,20 @@ $(window).load(function(e) {
 	//跳到第二页
 	H5Init({
 		pageAnimateType: 'threeD',//fade translate threeD
-		viewportWidth: 640,
-		scale : window.innerHeight<1008?window.innerHeight/1008:1,
+		//viewportHeight : 1108,
 		pageSwipeB : {
-			'0':false,
-			'1':false,
-			'2':false,
-			'3':false,
-			'4':false,
-			'5':false,
-			'6':false,
+			'0':1,
+			'1':1,
+			'2':0,
+			'3':-1,
+			'4':0,
+			'5':0,
+			'6':-1,
 		},
 	})
 	
-	//横屏 
-	//window.orientation = 90
-	/*JSeasy.rotateWindows({
-		winW:1136,//页面最大宽度 在手机中根据手机高度自动适配
-		winH:640,//页面适配宽度
-		callback: function(opt){
-			
-		},
-		onRotate: function(opt){
-			
-		}
-	});*/
-	
 	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
+	
 	
 	//setTimeout(function(){J.pageFunc(1,{endCallback:function(){alert(0)}})},3000)
 	//添加背景音乐
@@ -61,12 +45,18 @@ $(window).load(function(e) {
 		$('#micBtn').addClass('show');
 	}, false); 
 	
+	
+	
 	//关闭页面下拉刷新
 	JSeasy.setScroll(false)//
 	
+	//  获取地址里面带的参数
+	JSeasy.getQueryString('openid')
 	
+	//获取 10-20的随机整数
+	JSeasy.getRandomNum(10,20,false)
 	
-	//JSeasy.tipsText('请输入您的昵称')
+	JSeasy.tipsText('请输入您的昵称')
 	
 	/*	window.J.lazyLoad('.lazy_load',{
 		fileload:function(item){console.log(item)},
@@ -97,21 +87,51 @@ $(window).load(function(e) {
 	
 	
 	
-	/*JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
+	JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
 		console.log(reader)
 		$('.win1 .pic').css({'background-image':'url('+reader.result+')',opacity:1});
 		
 		
+	});
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//横屏 
+	//window.orientation = 0
+	/*JSeasy.rotateWindows({
+		winW:1136,//页面最大宽度 在手机中根据手机高度自动适配
+		winH:640,//页面适配宽度
+		callback: function(opt){
+			
+		},
+		onRotate: function(opt){
+			
+		}
 	});*/
 	
 	
 	
-	
-	
-	
-	
-	
-
+	/*$.get("http://dqpage.com/h5/lvdi/index.php", {openid:ID,Action:"get"}, function(data){
+			console.log(data);//0 玩过；1可以玩；-1没有这个用户 或者不是用微信登陆的
+			isShake = data;
+	},'jsonp');*/
 	
 	/*$.post("http://www.cui2.com/h5/tongCheng20151210/index.php?act=chaxun", {openid:openid}, function(data){
 			var data=JSON.parse(data);
@@ -131,7 +151,9 @@ $(window).load(function(e) {
 	
 	
 	
-	//$('.btn').on("click",function(e){
+	//$('.ewm').fadeIn(300);
+	var mc = new Hammer($('.info .btn')[0])
+	mc.on("tap",function(e){
 		var text1 = $('.info .text1').val().replace(/\s/g, ""),
 			text3 = $('.info .text3').val().replace(/\s/g, ""),
 			text2 = $('.info .text2').val().replace(/\s/g, "");
