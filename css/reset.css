@@ -35,30 +35,21 @@ body{	-webkit-user-select:none;/*文本不可选择*/
 			
 			
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color: #fff; opacity:1; 
+    color: #fff; opacity:0.4; 
 }
 
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color: #fff;opacity:1;
+    color: #fff;opacity:0.4;
 }
 
 input:-ms-input-placeholder{
-    color: #fff;opacity:1;
+    color: #fff;opacity:0.4;
 }
 
 input::-webkit-input-placeholder{
-    color: #fff;opacity:1;
+    color: #fff;opacity:0.4;
 }		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+	
 			
 .abso{position:absolute;}			
 
@@ -75,10 +66,10 @@ display:-webkit-flex;}
 .noScroll body{width:100%;height:100%;overflow:hidden;}	
 		
 /*提示分享层*/
-#fx{background:rgba(0,0,0,.9);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
+#fx{background:rgba(0,0,0,.7);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
 #fx img{float:right;}
 
-#tipsBox{background:rgba(0,0,0,.9);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
+#tipsBox{background:rgba(0,0,0,.7);position:fixed;left:0;top:0;height:100%;width:100%;text-align:center;display:none;z-index:9999;}
 #tipsBox span{background:#ccc;padding:20px;border-radius:4px;color:#333;font-size:25px;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}
 
 

@@ -120,18 +120,11 @@ $(window).load(function(e) {
 			JSON.stringify(result)
 	});*/
 	
-	//跳到第二页
-	
 	
 	
 	
 	/*
-	
-	
-	
-	
-	
-	//$('.btn').on("click",function(e){
+	//$('.sub').on("click",function(e){
 		var text1 = $('.info .text1').val().replace(/\s/g, ""),
 			text3 = $('.info .text3').val().replace(/\s/g, ""),
 			text2 = $('.info .text2').val().replace(/\s/g, "");
