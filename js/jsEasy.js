@@ -9,6 +9,7 @@ window.publicInfo = {
 	pageLen : 0,//总共多少页
 	
 	viewportHeight : null,
+	scale : 1,
 	prefix : null,
 	htmlFontSize : -1,
 	
@@ -24,22 +25,25 @@ function H5Init(opt){
 	publicInfo.pageSwipeB = opt.pageSwipeB;
 	
 	publicInfo.viewportHeight = opt.viewportHeight||null;
+	publicInfo.scale = opt.scale||1;
 	publicInfo.pageAnimateType = opt.pageAnimateType||'fade';
 	publicInfo.isRem = opt.isRem||false;
 	publicInfo.setPrefix = opt.setPrefix||false;
+	publicInfo.pageLen = publicInfo.page.length;
 	
 	
-	window.publicInfo.pageLen = window.publicInfo.page.length;
 	
 	JSeasy.pageAnimate[publicInfo.pageAnimateType+'Init']();
 	
 	if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
 		var w = publicInfo.viewportHeight*window.innerWidth/window.innerHeight;
-		//document.getElementById('content').style.width = w+'px';
-		//document.getElementById('viewEle').setAttribute('content','height='+publicInfo.viewportHeight+',width='+w+', user-scalable=no,target-densitydpi = device-dpi');
 		document.getElementById('viewEle').setAttribute('content','width='+w+', user-scalable=no,target-densitydpi = device-dpi');
 	}
 	
+	//document.getElementById('viewEle').setAttribute('content','width='+(opt.viewportWidth||640)+', user-scalable=no,target-densitydpi = device-dpi');
+	/*if(publicInfo.scale!=1){
+		$('body').css('zoom',publicInfo.scale)
+	}*/
 	
 	if(document.querySelector('#fx')){
 		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
@@ -68,14 +72,27 @@ function H5Init(opt){
 			if(!publicInfo.pageStatus)return false;
 			if(!publicInfo.pageCutover)return false;
 			if(publicInfo.pageSwipeB[publicInfo.indexPage]===false||publicInfo.pageSwipeB[publicInfo.indexPage]<0)return false;
-			J.pageFunc(publicInfo.indexPage+1);
+			
+			
+			var nextPage = window.publicInfo.page.eq(publicInfo.indexPage).attr('next-page')
+			if(nextPage){
+				J.pageFunc(Number(nextPage));
+			}else{
+				J.pageFunc(publicInfo.indexPage+1);
+			}
 		});
 		//上一页
 		mc.on("swipedown",function(){
 			if(!publicInfo.pageStatus)return false;
 			if(!publicInfo.pageCutover)return false;
 			if(publicInfo.pageSwipeB[publicInfo.indexPage]===false||publicInfo.pageSwipeB[publicInfo.indexPage]>0)return false;
-			J.pageFunc(publicInfo.indexPage-1);
+			
+			var nextPage = window.publicInfo.page.eq(publicInfo.indexPage).attr('previous-page')
+			if(nextPage){
+				J.pageFunc(Number(nextPage));
+			}else{
+				J.pageFunc(publicInfo.indexPage-1);
+			}
 		});
 	}
 
@@ -227,7 +244,14 @@ Date.prototype.format = function(format)
 			else{element['on'+type]=null;}
 		}
 	};
-	
+	JSeasy.throttle = function (method,context){
+			//console.log(method.tId)
+			if(method.tId)clearTimeout(method.tId);
+			//console.log(method.tId)
+			method.tId = setTimeout(function(){
+				method.call(context);
+			},100);
+	};
 	
 	JSeasy.browserDetect = function() {
 		var obj = {
@@ -570,6 +594,7 @@ Date.prototype.format = function(format)
 	};
 	 
 	JSeasy.rotateWindows = function(opt){
+
 		opt = opt||{};
 		var isSet = false,
 			winW = opt.winW||1136, winH = opt.winH||640;
