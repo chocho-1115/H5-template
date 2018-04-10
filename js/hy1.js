@@ -22,7 +22,7 @@ $(window).load(function(e) {
 			'5':false,
 			'6':false,
 		},
-	})
+	});
 	
 	//横屏 
 	//window.orientation = 90
@@ -36,8 +36,13 @@ $(window).load(function(e) {
 			
 		}
 	});*/
+	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){
+		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
+	});*/
 	
-	J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
+	var page = Number(J.getQueryString('page'))||1
+	J.pageFunc(page,{endCallback:function(){   }});
+	
 	
 	//setTimeout(function(){J.pageFunc(1,{endCallback:function(){alert(0)}})},3000)
 	//添加背景音乐

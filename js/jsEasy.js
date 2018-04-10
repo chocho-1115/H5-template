@@ -253,6 +253,28 @@ Date.prototype.format = function(format)
 			},100);
 	};
 	
+	JSeasy.isTime = function (time,tips,callback){
+		var t = (new Date(time)).getTime();
+		var nowT = new Date().getTime();
+		if(nowT<t){
+			JSeasy.tipsText(tips,false)
+			//$('#tipsBox').css('display','block');
+			var anim = window.setInterval(function(){
+				var nowT = new Date().getTime();
+				//console.log(t-nowT)
+				if(nowT>=t){
+					$('#tipsBox').css('display','none');
+					if(callback)callback()
+					clearInterval(anim);
+				}
+			}, 1000); 
+		}else{
+			if(callback)callback()
+	
+		}
+	};
+	
+	
 	JSeasy.browserDetect = function() {
 		var obj = {
 				agent : window.navigator.userAgent
@@ -282,24 +304,35 @@ Date.prototype.format = function(format)
 		closeB = closeB===undefined?true:closeB;
 		$('#tipsBox span').html(text)
 		$('#tipsBox').attr('close',closeB).fadeIn(300)
+		
+		
+		setTimeout(function(){
+			if($('#tipsBox').attr('close')=='true'){
+				$('#tipsBox').click()
+			}
+		},3000);
+		
+		
 	};
 	
 	
 	//publicInfo.pageSwipeB[publicInfo.indexPage]!=-1&&publicInfo.pageSwipeB[publicInfo.indexPage]!==false
 	JSeasy.pageFunc = function(num,opt){
 		
-		if(window.publicInfo.indexPage==num){
-			if(opt.startCallback)opt.startCallback();
-			if(opt.endCallback)opt.endCallback();
-			return false;
-		}
-		publicInfo.pageStatus = 0;
-		
 		var opt = opt || {},
 			direction = 1,
 			oldPage = publicInfo.page.eq(publicInfo.indexPage),
 			newPage = publicInfo.page.eq(num),
 			self = this;
+		
+		if(window.publicInfo.indexPage==num){
+			if(opt&&opt.startCallback)opt.startCallback();
+			if(opt&&opt.endCallback)opt.endCallback();
+			return false;
+		}
+		publicInfo.pageStatus = 0;
+		
+		
 			
 			
 		if(publicInfo.indexPage>num)direction = -1;
@@ -511,7 +544,7 @@ Date.prototype.format = function(format)
 				
 			} 
 			reader.readAsDataURL(file); //调用readAsDataURL方法来读取选中的图像文件
-		
+			
 		});	
 	};
 	
@@ -632,9 +665,7 @@ Date.prototype.format = function(format)
 			}else if( window.orientation == 90 || window.orientation == -90 ) {
 				$('.rotateWindows_tips').css('display','block');
 			}
-			
 		}
-	
 	}
 	
 	
@@ -650,7 +681,7 @@ Date.prototype.format = function(format)
 			TweenMax.set(newPage,{display:'block'});
 			TweenMax.to(oldPage,time/1000,{opacity:0});
 			TweenMax.to(newPage,time/1000,{opacity:1,onComplete:function(){
-				TweenMax.set(oldPage,{display:'none'});
+				TweenMax.set(window.publicInfo.page.not(newPage),{display:'none'});
 				callBack()
 			}});
 			
