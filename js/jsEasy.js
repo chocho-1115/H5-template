@@ -4,8 +4,8 @@ window.publicInfo = {
 	content : $('#content'),
 	page : $('.page'),
 	indexPage : -1,
-	pageStatus : 0,//页面切换状态
-	pageCutover : true,//页面切换开关
+	pageStatus : -1,//页面切换状态
+	pageCutover : true,//页面切换开关 可以用来从外部限制页面是否可以滑动翻页
 	pageLen : 0,//总共多少页
 	
 	viewportHeight : null,
@@ -72,7 +72,6 @@ function H5Init(opt){
 			if(!publicInfo.pageStatus)return false;
 			if(!publicInfo.pageCutover)return false;
 			if(publicInfo.pageSwipeB[publicInfo.indexPage]===false||publicInfo.pageSwipeB[publicInfo.indexPage]<0)return false;
-			
 			
 			var nextPage = window.publicInfo.page.eq(publicInfo.indexPage).attr('next-page')
 			if(nextPage){
@@ -205,7 +204,7 @@ Date.prototype.format = function(format)
 	window.JSeasy = window.J = {};
 		
 	JSeasy.EventUtil = {
-				
+		
 		//事件处理程序
 		addHandler:function(element,type,handler){
 			if(element.addEventListener){element.addEventListener(type,handler,false)}//DOM2
@@ -270,7 +269,7 @@ Date.prototype.format = function(format)
 			}, 1000); 
 		}else{
 			if(callback)callback()
-	
+			
 		}
 	};
 	
@@ -316,6 +315,7 @@ Date.prototype.format = function(format)
 	};
 	
 	
+	
 	//publicInfo.pageSwipeB[publicInfo.indexPage]!=-1&&publicInfo.pageSwipeB[publicInfo.indexPage]!==false
 	JSeasy.pageFunc = function(num,opt){
 		
@@ -323,28 +323,36 @@ Date.prototype.format = function(format)
 			direction = 1,
 			oldPage = publicInfo.page.eq(publicInfo.indexPage),
 			newPage = publicInfo.page.eq(num),
-			self = this;
+			self = this,
+			time = opt.time===undefined?800:opt.time;
 		
-		if(window.publicInfo.indexPage==num){
+		if(window.publicInfo.indexPage==num || num>=publicInfo.pageLen){
 			if(opt&&opt.startCallback)opt.startCallback();
 			if(opt&&opt.endCallback)opt.endCallback();
 			return false;
 		}
 		publicInfo.pageStatus = 0;
-		
-		
-			
 			
 		if(publicInfo.indexPage>num)direction = -1;
 		self.setUpJt(false);
 		if(opt.startCallback)opt.startCallback();
 		if(publicInfo.callback&&publicInfo.callback[num+'init'])publicInfo.callback[num+'init']();
 		
-		JSeasy.pageAnimate[publicInfo.pageAnimateType](
-			oldPage,
+		
+		
+		
+		if(publicInfo.indexPage>=0){
+			JSeasy.pageAnimate[publicInfo.pageAnimateType+'Out'](
+				oldPage,
+				direction,
+				time
+			);
+		}
+		
+		JSeasy.pageAnimate[publicInfo.pageAnimateType+'In'](
 			newPage,
 			direction,
-			opt.time===undefined?800:opt.time,
+			time,
 			function(){
 				oldPage.removeClass('show');
 				newPage.addClass('show');
@@ -362,10 +370,9 @@ Date.prototype.format = function(format)
 				}
 				
 				publicInfo.pageStatus = 1;
-			});
-		
+			}
+		);
 		publicInfo.indexPage = num;
-		
 	};
 	//预载器
 	JSeasy.preload = function(srcArr, params){
@@ -590,8 +597,7 @@ Date.prototype.format = function(format)
 			audioBtn.className = oldClass+' hide';
 			audioEle.pause();
 		}
-		var mc = new Hammer(audioBtn);
-		mc.on('tap',function(e){
+		$(audioBtn).on('click',function(e){
 			if(audioBtn.className==oldClass+' hide'){
 				audioBtn.className = oldClass+' show';
 				audioEle.play();
@@ -670,21 +676,27 @@ Date.prototype.format = function(format)
 	
 	
 	JSeasy.pageAnimate = {
+		
+		inAnimate:'fade',
+		
 		'fadeInit':function(){
 			TweenMax.set(publicInfo.page,{
 				display:'none',
 				opacity:0
 			});
 		},
-		'fade':function(oldPage,newPage,direction,time,callBack){
-			
-			TweenMax.set(newPage,{display:'block'});
-			TweenMax.to(oldPage,time/1000,{opacity:0});
-			TweenMax.to(newPage,time/1000,{opacity:1,onComplete:function(){
-				TweenMax.set(window.publicInfo.page.not(newPage),{display:'none'});
-				callBack()
+		'fadeIn':function(page,direction,time,callBack){
+			TweenMax.set(page,{display:'block'});
+			TweenMax.to(page,time/1000,{opacity:1,onComplete:function(){
+				callBack&&callBack()
 			}});
-			
+		},
+		'fadeOut':function(page,direction,time,callBack){
+			console.log(page)
+			TweenMax.to(page,time/1000,{opacity:0,onComplete:function(){
+				TweenMax.set(page,{display:'none'});
+				callBack&&callBack()
+			}});
 		},
 		'translateInit':function(){
 			TweenMax.set(publicInfo.page,{
@@ -698,7 +710,9 @@ Date.prototype.format = function(format)
 			TweenMax.set(oldPage,{'z-index':2});
 			TweenMax.set(newPage,{display: 'block',y:oldPage.height()*direction,'z-index':3});
 			TweenMax.to(newPage,time/1000,{y:0,opacity:1,onComplete:function(){
-				TweenMax.set(oldPage,{display: 'none','z-index':1});
+				//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
+					TweenMax.set(oldPage,{display: 'none','z-index':1});
+				//}
 				callBack()
 			}});
 		},
@@ -770,7 +784,9 @@ Date.prototype.format = function(format)
 				},
 				onComplete:function(){
 					TweenMax.set(oldPage,{'z-index':1});
-					oldPage.css({display: 'none'})
+					//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
+						oldPage.css({display: 'none'})
+					//}
 					callBack()
 					$('body').css({
 						'-webkit-perspective': 'none',
