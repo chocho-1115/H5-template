@@ -27,7 +27,7 @@ $(window).load(function(e) {
 	//横屏 的时候调用
 	//window.orientation = 90
 	/*JSeasy.rotateWindows({
-		winW:1136,//页面最大宽度 在手机中根据手机高度自动适配
+		winW:window.innerHeight,//页面最大宽度 在手机中根据手机高度自动适配
 		winH:640,//页面适配宽度
 		callback: function(opt){
 			
@@ -35,7 +35,8 @@ $(window).load(function(e) {
 		onRotate: function(opt){
 			
 		}
-	});*/
+	});
+	*/
 	
 	
 	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){

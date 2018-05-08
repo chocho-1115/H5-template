@@ -590,7 +590,7 @@ Date.prototype.format = function(format)
 		audioEle.btn = audioBtn;
 		var oldClass = audioBtn.className;
 		
-		if(autoplay&&!audioEle.paused){
+		if(autoplay){
 			audioBtn.className = oldClass+' show';
 			audioEle.play();
 		}else{
@@ -641,7 +641,8 @@ Date.prototype.format = function(format)
 		$('body').addClass('horizontalWindows');//水平窗口
 		
 		changeFunc();
-		window.addEventListener('orientationchange', changeFunc);
+		//window.addEventListener('orientationchange', changeFunc);
+		window.addEventListener('resize', changeFunc);
 		function changeFunc(event){
 			//pc端
 			if(window.orientation===undefined){
@@ -653,7 +654,7 @@ Date.prototype.format = function(format)
 			if ( window.orientation === 180 || window.orientation === 0 ) {//竖着的
 				if(!isSet){
 					isSet = true;
-					winW = $('body').height();//window.innerHeight;
+					//winW = $('body').height();//window.innerHeight;
 					$('.content').css({
 						position:'absolute',
 						left:'50%',
@@ -664,16 +665,16 @@ Date.prototype.format = function(format)
 						marginLeft:winW/-2,
 						marginTop:winH/-2
 					})
-					opt.onRotate&&opt.onRotate({winW:winW,winH:winH});
-					opt.callback&&opt.callback({winW:winW,winH:winH});
+					opt.callback&&opt.callback();
 				}
 				$('.rotateWindows_tips').css('display','none');
+				opt.onRotate&&opt.onRotate(0);
 			}else if( window.orientation == 90 || window.orientation == -90 ) {
 				$('.rotateWindows_tips').css('display','block');
+				opt.onRotate&&opt.onRotate(90);
 			}
 		}
 	}
-	
 	
 	JSeasy.pageAnimate = {
 		
