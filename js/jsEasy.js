@@ -307,7 +307,7 @@ Date.prototype.format = function(format)
 		
 		setTimeout(function(){
 			if($('#tipsBox').attr('close')=='true'){
-				$('#tipsBox').click()
+				$('#tipsBox').fadeOut(500);
 			}
 		},3000);
 		
