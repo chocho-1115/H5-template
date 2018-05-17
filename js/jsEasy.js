@@ -619,7 +619,7 @@ Date.prototype.format = function(format)
 		if(isScroll){
 			document.removeEventListener('touchmove',JSeasy.stopDefaultScroll,false);
 		}else{
-			document.addEventListener('touchmove',JSeasy.stopDefaultScroll,false);
+			document.addEventListener('touchmove',JSeasy.stopDefaultScroll,{passive: false});
 		}
 	};
 	
