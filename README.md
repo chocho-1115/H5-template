@@ -134,6 +134,10 @@ J.pageFunc(page,{
 上面通过参数page来跳转到相应的页面，可方便本地调试。
 
 ### 设置横屏
+~~~ html
+<div class="rotateWindows_tips"></div>
+~~~
+
 ~~~ js
 JSeasy.rotateWindows({
 	winW:window.innerHeight,//页面最大宽度 在手机中根据手机高度自动适配
