@@ -1,12 +1,12 @@
 
-### H5-template
+## H5-template
 
-## 页面基本结构
+### 页面基本结构
 ~~~ html
 <div class="content" id="content">
     <div class="page page0">
         <div class="nr">
-			<!--loading-->
+        	<!--loading-->
             <p class="abso load_num">LOADING<span id="set_load_num" >0</span></p>
         </div>
     </div>
@@ -17,7 +17,7 @@
     </div>
     <div class="page page2">
     	<div class="nr">
-			<!--第二页-->
+        	<!--第二页-->
         </div>
     </div>
     <div class="page page3">
@@ -28,7 +28,7 @@
 </div>
 ~~~
 
-## 设置最小适配高度  翻页动画  和是否滑动翻页
+### 设置最小适配高度  翻页动画  和是否滑动翻页
 ~~~ js
 H5Init({
 	pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
@@ -45,5 +45,124 @@ H5Init({
 	},
 });
 ~~~
+### 手动页面跳转
+~~~ js
+J.pageFunc(1,{
+	time:300,//翻页动画的运行时间
+	endCallback:function(){},//翻页后的回调函数
+	startCallback:function(){}//翻页前调用的函数
+});
+~~~
+
+### 添加背景音乐
+~~~ js
+//添加背景音乐
+var audioEle = J.addMp4({
+	src:'media/bj.mp3',
+	autoplay:true,//音乐是否自动播放
+	loop:true//是否循环播放
+});
+//给背景音乐添加一个按钮
+J.setMp4Btn({
+	audioBtn:document.getElementById('micBtn'),
+	audioEle:audioEle,
+	autoplay:true
+});
+//以下是为了兼容ios自动播放音乐
+document.addEventListener("WeixinJSBridgeReady", function () {  
+	audioEle.play();
+	$('#micBtn').addClass('show');
+}, false);  
+document.addEventListener('YixinJSBridgeReady', function() {  
+	audioEle.play(); 
+	$('#micBtn').addClass('show');
+}, false); 
+~~~
+
+### 关闭微信页面下拉露出网页来源
+~~~ js
+	J.setScroll(false)
+~~~
+setScroll 是通过取消document的touchmove默认行为来实现的，如果页面有滚动条会使滚动条失效，需要根据项目实际清空来适时开启或关闭。
+
+### 弹出提示文案
+~~~ js
+J.tipsText('请输入您的昵称')
+~~~
+提示文案默认会在一段时间后自动关闭，如果您不希望自动关闭，可以:
+~~~ js
+J.tipsText('请输入您的昵称',false);
+~~~
+
+### 图片资源懒加载（并列加载方式）
+~~~ html
+<div class='lazy' data-pic='image/bj.jpg'></div>
+<img class='lazy' data-pic='image/logo.png' />
+~~~
+~~~ js
+window.J.lazyLoad('.lazy',{
+	fileload:function(item){
+		console.log(item.progress);
+	},
+	complete:function(assets){
+		console.log(assets)
+	},
+	minTime:6000
+});
+~~~
+在h5有loading页面的时候，可以用lazyLoad来计算加载进度;
+上面示例中的fileload方法，是单个资源加载后的回调函数。其中item.progress可以获取到加载进度，是一个0-1的数字；
+上面示例中的complete方法中的assets，是所有的资源数组；
+minTime：如果你有一个漂亮的loading动画，想要每个用户都有足够的时间来欣赏它，你可以设置最小加载时间。设置这个参数，在你测试loading页面的时候也非常有用。
+
+### 获取地址参数getQueryString
+~~~ js
+var page = Number(J.getQueryString('page'))||3//
+J.pageFunc(page,{
+	time:300,//翻页动画的运行时间
+	endCallback:function(){},//翻页后的回调函数
+	startCallback:function(){}//翻页前调用的函数
+});
+~~~
+上面通过参数page来跳转到相应的页面，可方便本地调试。
+
+### 设置横屏
+~~~ js
+JSeasy.rotateWindows({
+	winW:window.innerHeight,//页面最大宽度 在手机中根据手机高度自动适配
+	winH:640,//页面适配宽度
+	callback: function(opt){
+
+	},
+	onRotate: function(opt){
+
+	}
+});
+~~~
+原理是在关闭系统横屏功能的同时，用css3旋转 div#content 元素；
+这里要注意，如果旋转了canvas，canvas的坐标获取并没有因此发生旋转，另外在ios有滚动条的情况下，也有些不可描述的地方，不过都可以找到解决办法，这里就不详细说明了。
+
+### 调用相册图片
+~~~ js
+JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
+	console.log(reader.result)
+});
+~~~
+reader.result 返回base64字符串
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
