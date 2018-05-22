@@ -102,6 +102,7 @@ J.tipsText('请输入您的昵称',false);
 <div class='lazy' data-pic='image/bj.jpg'></div>
 <img class='lazy' data-pic='image/logo.png' />
 ~~~
+加载所有 .lazy 元素的data-pic属性指向的图片资源：
 ~~~ js
 window.J.lazyLoad('.lazy',{
 	fileload:function(item){
@@ -113,7 +114,9 @@ window.J.lazyLoad('.lazy',{
 	minTime:6000
 });
 ~~~
-在h5有loading页面的时候，可以用lazyLoad来计算加载进度;
+如果元素为img，加载后的资源会赋值到src属性上。如果为非img元素，加载的资源会写到行内样式 background-image 中；
+
+在h5有loading页面的时候，可以通过lazyLoad函数中的item.progress来获取加载进度;
 
 上面示例中的fileload方法，是单个资源加载后的回调函数。其中item.progress可以获取到加载进度，是一个0-1的数字；
 
