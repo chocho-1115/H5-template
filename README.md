@@ -15,7 +15,7 @@
         	<!--第一页-->
         </div>
     </div>
-    <div class="page page2">
+    <div class="page page2" next-page='3' previous-page='1'>
     	<div class="nr">
         	<!--第二页-->
         </div>
@@ -26,6 +26,9 @@
         </div>
     </div>
 </div>
+
+如果页面开启了滑动翻页，可以设置 div.page 元素的next-page和previous-page元素属性来控制当前页面上翻和下翻的目标页面。
+
 ~~~
 
 ### 设置最小适配高度  翻页动画  和是否滑动翻页
@@ -111,9 +114,13 @@ window.J.lazyLoad('.lazy',{
 });
 ~~~
 在h5有loading页面的时候，可以用lazyLoad来计算加载进度;
+
 上面示例中的fileload方法，是单个资源加载后的回调函数。其中item.progress可以获取到加载进度，是一个0-1的数字；
+
 上面示例中的complete方法中的assets，是所有的资源数组；
+
 minTime：如果你有一个漂亮的loading动画，想要每个用户都有足够的时间来欣赏它，你可以设置最小加载时间。设置这个参数，在你测试loading页面的时候也非常有用。
+
 
 ### 获取地址参数getQueryString
 ~~~ js
@@ -140,6 +147,7 @@ JSeasy.rotateWindows({
 });
 ~~~
 原理是在关闭系统横屏功能的同时，用css3旋转 div#content 元素；
+
 这里要注意，如果旋转了canvas，canvas的坐标获取并没有因此发生旋转，另外在ios有滚动条的情况下，也有些不可描述的地方，不过都可以找到解决办法，这里就不详细说明了。
 
 ### 调用相册图片
@@ -151,13 +159,40 @@ JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
 reader.result 返回base64字符串
 
 
+### 判断是否为手机号码
+~~~ js
+JSeasy.isMobile(srt)
+~~~
+
+### 判断是否为邮箱地址
+~~~ js
+JSeasy.isEmail(srt)
+~~~
+
+### 生成随机数
+~~~ js
+J.getRandomNum(Min,Max,integerB){ 
+~~~
+整数[]  任意数（）
+
+### 设备判断
+~~~ js
+var obj = J.browserDetect();
+obj.isWindowPhone
+obj.isFirefox
+obj.isOpera
+obj.isChrome
+obj.isIOS
+obj.isAndroid
+obj.isBlackberry
+~~~
+根据设备的 window.navigator.userAgent 字符串返回设备信息;
 
 
-
-
-
-
-
+### 函数节流
+~~~ js
+J.throttle(method,context);
+~~~
 
 
 
