@@ -84,7 +84,7 @@ document.addEventListener('YixinJSBridgeReady', function() {
 
 ### 关闭微信页面下拉露出网页来源
 ~~~ js
-	J.setScroll(false)
+J.setScroll(false)
 ~~~
 setScroll 是通过取消document的touchmove默认行为来实现的，如果页面有滚动条会使滚动条失效，需要根据项目实际清空来适时开启或关闭。
 
