@@ -1,5 +1,10 @@
 @charset "utf-8";
 /* CSS Document */
+/*7s
+@keyframes blinky {
+	0%, 9%, 11%, 19%, 21%, 69%, 71%, 100% { transform: scaleY(1) }
+	10%, 20%, 70% { transform: scaleY(0.1) }
+}*/
 
 .dw.dw-ltr{-webkit-transform:scale(1.5,1.5);transform:scale(1.5,1.5)}
 
@@ -8,12 +13,9 @@
 .load_num{font-size:16px;left:0;top:550px;color:#886d38;text-align:center;width:100%;font-weight:bold;}
 
 .page0 {background:}
-.page1 {background:;}
-.page2 {background:}
-.page3 {background:}
-
-
-
+.page1 {background:#966;}
+.page2 {background:#669}
+.page3 {background:#696}
 
 
 

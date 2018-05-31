@@ -339,21 +339,12 @@ Date.prototype.format = function(format)
 		if(publicInfo.callback&&publicInfo.callback[num+'init'])publicInfo.callback[num+'init']();
 		
 		
-		
-		
-		if(publicInfo.indexPage>=0){
-			JSeasy.pageAnimate[publicInfo.pageAnimateType+'Out'](
-				oldPage,
-				direction,
-				time
-			);
-		}
-		
-		JSeasy.pageAnimate[publicInfo.pageAnimateType+'In'](
-			newPage,
-			direction,
-			time,
-			function(){
+		JSeasy.pageAnimate[publicInfo.pageAnimateType]({
+			newPage:newPage,
+			oldPage:oldPage,
+			direction:direction,
+			time:time,
+			endCallback:function(){
 				oldPage.removeClass('show');
 				newPage.addClass('show');
 				
@@ -371,7 +362,7 @@ Date.prototype.format = function(format)
 				
 				publicInfo.pageStatus = 1;
 			}
-		);
+		});
 		publicInfo.indexPage = num;
 	};
 	//预载器
@@ -686,17 +677,18 @@ Date.prototype.format = function(format)
 				opacity:0
 			});
 		},
-		'fadeIn':function(page,direction,time,callBack){
-			TweenMax.set(page,{display:'block'});
-			TweenMax.to(page,time/1000,{opacity:1,onComplete:function(){
-				callBack&&callBack()
-			}});
-		},
-		'fadeOut':function(page,direction,time,callBack){
-			console.log(page)
-			TweenMax.to(page,time/1000,{opacity:0,onComplete:function(){
-				TweenMax.set(page,{display:'none'});
-				callBack&&callBack()
+		'fade':function(opt){
+			
+			if(publicInfo.indexPage>=0){
+				TweenMax.to(opt.oldPage,opt.time/1000,{opacity:0,onComplete:function(){
+					TweenMax.set(opt.oldPage,{display:'none'});
+					//callBack&&callBack()
+				}});
+			}
+			
+			TweenMax.set(opt.newPage,{display:'block'});
+			TweenMax.to(opt.newPage,opt.time/1000,{opacity:1,onComplete:function(){
+				opt.endCallback()
 			}});
 		},
 		'translateInit':function(){
@@ -707,14 +699,14 @@ Date.prototype.format = function(format)
 				'z-index':1
 			});
 		},
-		'translate':function(oldPage,newPage,direction,time,callBack){
-			TweenMax.set(oldPage,{'z-index':2});
-			TweenMax.set(newPage,{display: 'block',y:oldPage.height()*direction,'z-index':3});
-			TweenMax.to(newPage,time/1000,{y:0,opacity:1,onComplete:function(){
+		'translate':function(opt){
+			TweenMax.set(opt.oldPage,{'z-index':2});
+			TweenMax.set(opt.newPage,{display: 'block',y:opt.oldPage.height()*opt.direction,'z-index':3});
+			TweenMax.to(opt.newPage,opt.time/1000,{y:0,opacity:1,onComplete:function(){
 				//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
-					TweenMax.set(oldPage,{display: 'none','z-index':1});
+					TweenMax.set(opt.oldPage,{display: 'none','z-index':1});
 				//}
-				callBack()
+				opt.endCallback()
 			}});
 		},
 		'threeDInit':function(){
@@ -741,7 +733,7 @@ Date.prototype.format = function(format)
 			});
 			
 		},
-		'threeD':function(oldPage,newPage,direction,time,callBack){ 
+		'threeD':function(opt){ 
 			
 			$('body').css({
 				'-webkit-perspective': '1200px',
@@ -752,27 +744,27 @@ Date.prototype.format = function(format)
 			var z = publicInfo.browserDetect.isIOS? -window.innerHeight/2:0;
 			
 			publicInfo.content.css({
-				transform: 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*direction)+'deg) rotateY(0deg)',
-				'-weikit-transform': 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*direction)+'deg) rotateY(0deg)',
+				transform: 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*opt.direction)+'deg) rotateY(0deg)',
+				'-weikit-transform': 'translate3d(0px, 0px, '+ z +'px) rotateX('+(-90*opt.direction)+'deg) rotateY(0deg)',
 			});
 			
-			oldPage.css({
+			opt.oldPage.css({
 				'z-index':2,
-				transform: 'translate3d(0px, '+ (-window.innerHeight*direction) +'px, 0px) rotateX('+(90*direction)+'deg) rotateY(0deg)',
-				'-weikit-transform': 'translate3d(0px, '+ (-window.innerHeight*direction) +'px, 0px) rotateX('+(90*direction)+'deg) rotateY(0deg)',
+				transform: 'translate3d(0px, '+ (-window.innerHeight*opt.direction) +'px, 0px) rotateX('+(90*opt.direction)+'deg) rotateY(0deg)',
+				'-weikit-transform': 'translate3d(0px, '+ (-window.innerHeight*opt.direction) +'px, 0px) rotateX('+(90*opt.direction)+'deg) rotateY(0deg)',
 				
-				'-webkit-transform-origin': 'center '+(direction==1?'bottom':'top'),
-				transformOrigin: 'center '+(direction==1?'bottom':'top'),
+				'-webkit-transform-origin': 'center '+(opt.direction==1?'bottom':'top'),
+				transformOrigin: 'center '+(opt.direction==1?'bottom':'top'),
 			});
 			
-			newPage.css({
+			opt.newPage.css({
 				display: 'block',
 				'z-index':3,
 				transform: 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)',
 				'-weikit-transform': 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)'
 			});
-			var obj = {curImg: -90*direction};
-			TweenMax.to(obj,time/1000,{
+			var obj = {curImg: -90*opt.direction};
+			TweenMax.to(obj,opt.time/1000,{
 				curImg:0,
 				//roundProps: "curImg",  // 仅产生整数
 				ease: Power1.easeInOut,
@@ -784,11 +776,11 @@ Date.prototype.format = function(format)
 					});
 				},
 				onComplete:function(){
-					TweenMax.set(oldPage,{'z-index':1});
+					TweenMax.set(opt.oldPage,{'z-index':1});
 					//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
-						oldPage.css({display: 'none'})
+						opt.oldPage.css({display: 'none'})
 					//}
-					callBack()
+					opt.endCallback()
 					$('body').css({
 						'-webkit-perspective': 'none',
 						'perspective': 'none'

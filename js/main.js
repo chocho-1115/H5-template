@@ -15,9 +15,9 @@ $(window).load(function(e) {
 		// 0 代表可上翻  也可以下翻   1 代表只可下翻    -1代表只可以上翻   false 代表不可以滑动翻页
 		pageSwipeB : {
 			'0':false,//
-			'1':false,
-			'2':false,
-			'3':0,
+			'1':1,
+			'2':0,
+			'3':-1,
 			'4':false,
 			'5':false,
 			'6':false,
@@ -43,7 +43,7 @@ $(window).load(function(e) {
 		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 	});*/
 	
-	var page = Number(J.getQueryString('page'))||3//
+	var page = Number(J.getQueryString('page'))||1//
 	J.pageFunc(page,{
 		time:300,//翻页动画的运行时间
 		endCallback:function(){},//翻页后的回调函数
