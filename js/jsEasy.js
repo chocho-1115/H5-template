@@ -335,8 +335,13 @@ Date.prototype.format = function(format)
 			
 		if(publicInfo.indexPage>num)direction = -1;
 		self.setUpJt(false);
+		
+		
+		//TweenMax.set(opt.newPage,{display:'block'});
+		newPage.css({display:'block'})
 		if(opt.startCallback)opt.startCallback();
 		if(publicInfo.callback&&publicInfo.callback[num+'init'])publicInfo.callback[num+'init']();
+		
 		
 		
 		JSeasy.pageAnimate[publicInfo.pageAnimateType]({
@@ -504,7 +509,7 @@ Date.prototype.format = function(format)
 	JSeasy.isMobile = function (str){
 		if(str==null||str=="") return false;
 		//var result=str.match(/^((\(\d{2,3}\))|(\d{3}\-))?((13\d{9})|(15\d{9})|(18\d{9}))$/);
-		var result=str.match(/^1[3|4|5|7|8][0-9]\d{8}$/);
+		var result=str.match(/^1[3|4|5|6|7|8][0-9]\d{8}$/);
 		if(result==null)return false;
 		return true;
 	};
@@ -686,7 +691,7 @@ Date.prototype.format = function(format)
 				}});
 			}
 			
-			TweenMax.set(opt.newPage,{display:'block'});
+			//TweenMax.set(opt.newPage,{display:'block'});
 			TweenMax.to(opt.newPage,opt.time/1000,{opacity:1,onComplete:function(){
 				opt.endCallback()
 			}});
@@ -701,7 +706,8 @@ Date.prototype.format = function(format)
 		},
 		'translate':function(opt){
 			TweenMax.set(opt.oldPage,{'z-index':2});
-			TweenMax.set(opt.newPage,{display: 'block',y:opt.oldPage.height()*opt.direction,'z-index':3});
+			TweenMax.set(opt.newPage,{//display: 'block',
+				y:opt.oldPage.height()*opt.direction,'z-index':3});
 			TweenMax.to(opt.newPage,opt.time/1000,{y:0,opacity:1,onComplete:function(){
 				//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
 					TweenMax.set(opt.oldPage,{display: 'none','z-index':1});
@@ -758,7 +764,7 @@ Date.prototype.format = function(format)
 			});
 			
 			opt.newPage.css({
-				display: 'block',
+				//display: 'block',
 				'z-index':3,
 				transform: 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)',
 				'-weikit-transform': 'translate3d(0px, 0px, 0px) rotateX('+(0)+'deg) rotateY(0deg)'
@@ -792,17 +798,3 @@ Date.prototype.format = function(format)
 	};
 	
 }(window));
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -37,6 +37,12 @@ $(window).load(function(e) {
 		}
 	});
 	*/
+	window.publicInfo.callback = {
+		'2init':function(){
+			
+		}
+	}
+	
 	
 	
 	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){
