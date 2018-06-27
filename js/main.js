@@ -8,7 +8,7 @@ $(window).load(function(e) {
 	//跳到第二页
 	H5Init({
 		pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
-		viewportHeight: 1008,//1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
+		viewportHeight: 1008,//640*1338    750*1334     1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
 		//scale : window.innerHeight<1008?window.innerHeight/1008:1,  //此参数 作废
 		
 		//滑动翻页控制
@@ -37,13 +37,18 @@ $(window).load(function(e) {
 		}
 	});
 	*/
-	window.publicInfo.callback = {
-		'2init':function(){
+	window.publicInfo.pageCallback = {
+		'2':function(){
 			
 		}
 	}
 	
-	
+	$('img').on('click',function(e){
+		//alert(0)
+		e.preventDefault();
+		e.stopPropagation();
+		return false;
+	})
 	
 	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){
 		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页

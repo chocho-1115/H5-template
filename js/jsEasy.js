@@ -1,4 +1,4 @@
-//UIeasy.js by 华扬长沙 杨燚平 email：849890769@qq.com
+//https://github.com/chocho-1115/H5-template by 华扬长沙 杨燚平 email：849890769@qq.com
 
 window.publicInfo = {
 	content : $('#content'),
@@ -18,7 +18,47 @@ window.publicInfo = {
 	pageAnimateType: 'fade',//fade translate threeD
 	setPrefix : false, //
 	isRem : false, //是否为rem适配
+	
+	pageCallback: null
 };
+
+
+
+
+
+
+
+$('img').on('click',function(e){
+	if(e.target.parentNode.nodeName=='A')return;
+	e.preventDefault();
+	//e.stopPropagation();
+	//return false;
+})
+document.body.ondragstart=function(e){
+	e.preventDefault();
+	//e.stopPropagation();
+}
+
+
+if(document.querySelector('#fx')){
+	$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
+	$('#fx').on('click',function(){$(this).fadeOut(500);});
+}
+if(document.querySelector('#tipsBox')){
+	$('#tipsBox').on('click',function(){
+		if($('#tipsBox').attr('close')=='true')$(this).fadeOut(500);
+	});
+}
+
+$('.close').on('click',function(e){
+	$(this.parentNode).css('display','none');
+});
+
+
+
+
+
+
 
 function H5Init(opt){
 	
@@ -45,19 +85,13 @@ function H5Init(opt){
 		$('body').css('zoom',publicInfo.scale)
 	}*/
 	
-	if(document.querySelector('#fx')){
-		$('.fxBtn').on('click',function(){$('#fx').fadeIn(500);});
-		$('#fx').on('click',function(){$(this).fadeOut(500);});
-	}
-	if(document.querySelector('#tipsBox')){
-		$('#tipsBox').on('click',function(){
-			if($('#tipsBox').attr('close')=='true')$(this).fadeOut(500);
-		});
-	}
 	
-	$('.close').on('click',function(e){
-		$(this.parentNode).css('display','none');
-	});
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -97,25 +131,29 @@ function H5Init(opt){
 
 	
 	if(publicInfo.setPrefix){
-		/*
-		获取浏览器前缀：
-			文档模式为 [ie8- 和 [Opera12.16- prefix 将返回null；
-			(Opera12.16+ 内核改为谷歌内核 将返回 webkit 前缀；
-			不过这些浏览器没有必要获取浏览器前缀了 浏览器前缀主要用于css3 而这些老古董浏览器不支持大部分的css3；
-		*/
-		if(window.opera||!window.getComputedStyle)return null;
-		var styles = window.getComputedStyle(document.documentElement, ''),
-			pre = (Array.prototype.slice
-			.call(styles)
-			.join('') 
-			.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1],
-			dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
-		window.publicInfo.prefix = {
-			dom: dom,
-			lowercase: pre,
-			css: '-' + pre + '-',
-			js: pre[0].toUpperCase() + pre.substr(1)
-		};
+		
+		window.publicInfo.prefix = (function(){
+			/*
+			获取浏览器前缀：
+				文档模式为 [ie8- 和 [Opera12.16- prefix 将返回null；
+				(Opera12.16+ 内核改为谷歌内核 将返回 webkit 前缀；
+				不过这些浏览器没有必要获取浏览器前缀了 浏览器前缀主要用于css3 而这些老古董浏览器不支持大部分的css3；
+			*/
+			if(window.opera||!window.getComputedStyle)return null;
+			var styles = window.getComputedStyle(document.documentElement, ''),
+				pre = (Array.prototype.slice
+				.call(styles)
+				.join('') 
+				.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1],
+				dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+			return {
+				dom: dom,
+				lowercase: pre,
+				css: '-' + pre + '-',
+				js: pre[0].toUpperCase() + pre.substr(1)
+			};
+		}())
+		
 	}
 	
 	//rem适配   DOMContentLoaded
@@ -340,7 +378,7 @@ Date.prototype.format = function(format)
 		//TweenMax.set(opt.newPage,{display:'block'});
 		newPage.css({display:'block'})
 		if(opt.startCallback)opt.startCallback();
-		if(publicInfo.callback&&publicInfo.callback[num+'init'])publicInfo.callback[num+'init']();
+		if(publicInfo.pageCallback&&publicInfo.pageCallback[num])publicInfo.pageCallback[num]();
 		
 		
 		
@@ -784,7 +822,7 @@ Date.prototype.format = function(format)
 				onComplete:function(){
 					TweenMax.set(opt.oldPage,{'z-index':1});
 					//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
-						opt.oldPage.css({display: 'none'})
+						//opt.oldPage.css({display: 'none'})
 					//}
 					opt.endCallback()
 					$('body').css({
