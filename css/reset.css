@@ -50,6 +50,7 @@ input::-webkit-input-placeholder{
     color: #fff;opacity:0.4;
 }		
 	
+.penetrate{pointer-events: none;}
 			
 .abso{position:absolute;}			
 

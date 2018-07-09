@@ -24,10 +24,6 @@ window.publicInfo = {
 
 
 
-
-
-
-
 $('img').on('click',function(e){
 	if(e.target.parentNode.nodeName=='A')return;
 	e.preventDefault();

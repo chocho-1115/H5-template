@@ -43,12 +43,7 @@ $(window).load(function(e) {
 		}
 	}
 	
-	$('img').on('click',function(e){
-		//alert(0)
-		e.preventDefault();
-		e.stopPropagation();
-		return false;
-	})
+	
 	
 	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){
 		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
