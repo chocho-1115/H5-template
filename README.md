@@ -86,7 +86,7 @@ document.addEventListener('YixinJSBridgeReady', function() {
 ~~~ js
 J.setScroll(false)
 ~~~
-setScroll 是通过取消document的touchmove默认行为来实现的，如果页面有滚动条会使滚动条失效，需要根据项目实际清空来适时开启或关闭。
+setScroll 是通过取消document的touchmove默认行为来实现的，如果页面有滚动条会使滚动条失效，需要根据项目实际情况来适时开启或关闭。
 
 ### 弹出提示文案
 ~~~ js
