@@ -41,9 +41,13 @@ $(window).load(function(e) {
 		'2':function(){
 			
 		}
-	}
+	};
 	
-	
+	+function(){
+		J.countDown("9/2/2918 00:00:00",function(data){
+			console.log(data.day+'天 '+(data.hour<10?"0"+data.hour:data.hour)+':'+(data.minute<10?"0"+data.minute:data.minute)+':'+(data.second<10?"0"+data.second:data.second))
+		});
+	}();
 	
 	/*JSeasy.isTime("Dec 08, 2017 11:54:00",'活动将于12点开始',function(){
 		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
@@ -59,7 +63,7 @@ $(window).load(function(e) {
 	
 	//setTimeout(function(){J.pageFunc(1,{endCallback:function(){alert(0)}})},3000)
 	//添加背景音乐
-	var audioEle = J.addMp4({
+	/*var audioEle = J.addMp4({
 		src:'media/bj.mp3',
 		autoplay:true,//音乐是否自动播放
 		loop:true//是否循环播放
@@ -78,7 +82,7 @@ $(window).load(function(e) {
 	document.addEventListener('YixinJSBridgeReady', function() {  
 		audioEle.play(); 
 		$('#micBtn').addClass('show');
-	}, false); 
+	}, false); */
 	
 	
 	//关闭页面下拉露出网页来源
@@ -120,12 +124,15 @@ $(window).load(function(e) {
 	
 	
 	//调用手机相册
-	/*JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
+	var fileEle = J.initUpImg($('.page1'),'image/*',function(reader){
 		console.log(reader)
-		$('.win1 .pic').css({'background-image':'url('+reader.result+')',opacity:1});
-		
-		
-	});*/
+		//.substring(22)
+		//type为jpeg webp的情况下 encoderOptions才起作用
+		J.compressionPIC(reader.result,{maxWidth:100,type:'image/png',encoderOptions:0.92},function(picdata){
+			//$('.page4 .logo').attr('src',picdata)
+			$('.page1 img').attr({'src':picdata});
+		})
+	});
 	
 	
 	

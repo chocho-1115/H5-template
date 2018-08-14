@@ -1,8 +1,8 @@
 //https://github.com/chocho-1115/H5-template by 华扬长沙 杨燚平 email：849890769@qq.com
 
 window.publicInfo = {
-	content : $('#content'),
-	page : $('.page'),
+	content : null,
+	page : null,
 	indexPage : -1,
 	pageStatus : -1,//页面切换状态
 	pageCutover : true,//页面切换开关 可以用来从外部限制页面是否可以滑动翻页
@@ -19,9 +19,8 @@ window.publicInfo = {
 	setPrefix : false, //
 	isRem : false, //是否为rem适配
 	
-	pageCallback: null
+	pageCallback: {}
 };
-
 
 
 $('img').on('click',function(e){
@@ -53,10 +52,12 @@ $('.close').on('click',function(e){
 
 
 
-
-
-
 function H5Init(opt){
+	
+	publicInfo.content = $('#content');
+	publicInfo.page = $('.page');
+	
+	
 	
 	publicInfo.pageSwipeB = opt.pageSwipeB;
 	
@@ -277,6 +278,41 @@ Date.prototype.format = function(format)
 			else{element['on'+type]=null;}
 		}
 	};
+	
+	JSeasy.countDown = function (time,callback){
+		var data = {
+			death: false,
+			day: 0,
+			hour: 0,
+			minute: 0,
+			second: 0
+		};
+		
+		var end_time = (new Date(time)).getTime();//月份是实际月份-1
+
+		var sys_second = (end_time-new Date().getTime())/1000;
+
+		function anim(){
+			if (sys_second > 1) {
+				data.day = Math.floor((sys_second / 3600) / 24);
+				data.hour = Math.floor((sys_second / 3600) % 24);
+				data.minute = Math.floor((sys_second / 60) % 60);
+				data.second = Math.floor(sys_second % 60);
+				sys_second -= 1;
+			} else { 
+				clearInterval(timer);
+				data.death = true;//
+				data.day = 0;//计算天
+				data.hour = 0;//计算小时
+				data.minute = 0;//计算分钟
+				data.second = 0;//计算秒杀
+			}
+			if(callback)callback(data);
+		}
+		anim();
+		var timer = setInterval(anim, 1000);
+	};
+	
 	JSeasy.throttle = function (method,context){
 			//console.log(method.tId)
 			if(method.tId)clearTimeout(method.tId);
@@ -562,8 +598,15 @@ Date.prototype.format = function(format)
 	};
 	
 	
-	JSeasy.initUpImg = function(btnEle,endCallback){
-		btnEle.addEventListener('change', function () {
+	//<input class="abso upimg" id="upimg" accept="image/*" type="file" style='left:100px;top:100px;width:100px;height:100px;opacity:0.5'/>
+		
+	JSeasy.initUpImg = function(btnEle, accept, endCallback){
+		
+		var fileEle = document.createElement('input');
+		fileEle.setAttribute('type','file');
+		fileEle.setAttribute('accept',accept);
+		
+		fileEle.addEventListener('change', function () {
 		
 			var file = this.files[0]; //获取file对象
 			//判断file的类型是不是图片类型。
@@ -582,8 +625,60 @@ Date.prototype.format = function(format)
 			} 
 			reader.readAsDataURL(file); //调用readAsDataURL方法来读取选中的图像文件
 			
-		});	
+		});
+		
+		btnEle.on('click',function(){
+			fileEle.click();
+		})
+		
+		return fileEle;
+		
 	};
+	
+	
+	
+	// encoderOptions 可选
+	// 在指定图片格式为 image/jpeg 或 image/webp的情况下，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92。其他参数会被忽略。
+	JSeasy.compressionPIC = function(src,{maxWidth=640,type='image/png',encoderOptions=0.92}={},callback){
+		var Img = new Image(); 
+		Img.onload = init;  
+		Img.onerror = function() {  
+			var Img = new Image();
+			Img.onload = init;
+			Img.src = src;
+		}  
+
+		Img.crossOrigin = 'Anonymous';//解决跨域问题，需在服务器端运行，也可为 anonymous   
+		Img.src = src;
+
+		function init(name){
+
+			var canvas = document.createElement('canvas');
+
+			var w = Math.min(maxWidth,Number(this.width))
+			var h = this.height*w/this.width;
+
+			canvas.width = w;
+			canvas.height = h;
+			var ctx = canvas.getContext("2d")
+
+			ctx.drawImage(this, 0, 0, w, h);
+
+			if(callback)callback(canvas.toDataURL(type,encoderOptions));
+
+		}
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	JSeasy.addMp4 = function(opt){
 		var audioEle = document.createElement('audio');
