@@ -627,9 +627,9 @@ Date.prototype.format = function(format)
 			
 		});
 		
-		btnEle.on('click',function(){
+		btnEle.onclick = function(){
 			fileEle.click();
-		})
+		}
 		
 		return fileEle;
 		
