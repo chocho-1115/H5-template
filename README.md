@@ -159,11 +159,22 @@ JSeasy.rotateWindows({
 
 ### 调用相册图片
 ~~~ js
-JSeasy.initUpImg(document.querySelector('#upimg'),function(reader){
+var fileEle = J.initUpImg(element,'image/*',function(reader){
 	console.log(reader.result)
 });
 ~~~
-reader.result 返回base64字符串
+initUpImg函数返回一个file类型的input；
+reader.result 是选择图片后 图片的base64字符串
+
+
+### 图片压缩
+~~~ js
+J.compressionPIC(url,{maxWidth:100,type:'image/png',encoderOptions:0.92},function(picdata){
+	
+})
+~~~
+maxWidth 限制图片的最大宽度；如果图片宽度小于maxWidth，返回的图片保持原始宽度；
+type为jpeg webp的情况下 encoderOptions才起作用
 
 
 ### 判断是否为手机号码
