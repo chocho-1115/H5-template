@@ -124,7 +124,7 @@ $(window).load(function(e) {
 	
 	
 	//调用手机相册
-	var fileEle = J.initUpImg($('.page1')[0],'image/*',function(reader){
+	var fileEle = J.initUpImg($('.page1'),'image/*',function(reader){
 		console.log(reader)
 		//.substring(22)
 		//type为jpeg webp的情况下 encoderOptions才起作用
