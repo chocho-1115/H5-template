@@ -164,8 +164,8 @@ var fileEle = J.initUpImg(element,'image/*',function(reader){
 });
 ~~~
 initUpImg函数返回一个file类型的input；
+参数element可以指向任何类型的元素，不一定非得file类型的input；
 reader.result 是选择图片后 图片的base64字符串
-
 
 ### 图片压缩
 ~~~ js
