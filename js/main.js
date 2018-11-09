@@ -8,7 +8,7 @@ $(window).load(function(e) {
 	//跳到第二页
 	H5Init({
 		pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
-		viewportHeight: 1008,//640*1338    750*1334     1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
+		viewportHeight: 1008,//640 1136 1236 1250    750 1334 1448 1450    
 		//scale : window.innerHeight<1008?window.innerHeight/1008:1,  //此参数 作废
 		
 		//滑动翻页控制
@@ -44,8 +44,17 @@ $(window).load(function(e) {
 	};
 	
 	+function(){
-		J.countDown("9/2/2918 00:00:00",function(data){
-			console.log(data.day+'天 '+(data.hour<10?"0"+data.hour:data.hour)+':'+(data.minute<10?"0"+data.minute:data.minute)+':'+(data.second<10?"0"+data.second:data.second))
+		
+		var end_time = (new Date()).getTime()+10001;//月份是实际月份-1 "10/31/2018 14:51:00"
+		
+		J.countDown(end_time,{
+			framerate:100,
+			onUpdate:function(res){
+				console.log(res.second)
+			},
+			onComplete:function(res){
+				console.log(res.day+'天 '+(res.hour<10?"0"+res.hour:res.hour)+':'+(res.minute<10?"0"+res.minute:res.minute)+':'+(res.second<10?"0"+res.second:res.second)+':'+res.millisecond)
+			}
 		});
 	}();
 	
@@ -123,19 +132,20 @@ $(window).load(function(e) {
 	});*/
 	
 	
+	
 	//调用手机相册
-	var fileEle = J.initUpImg($('.page1')[0],'image/*',function(reader){
+	/*var fileEle = J.initUpImg(document.documentElement,'image/*',function(reader){
 		console.log(reader)
+		var exif_orientation = J.exifOrientation(reader.result)
 		//.substring(22)
 		//type为jpeg webp的情况下 encoderOptions才起作用
-		J.compressionPIC(reader.result,{maxWidth:100,type:'image/png',encoderOptions:0.92},function(picdata){
+		J.compressionPIC(reader.result,{maxSize:750,exif_orientation:exif_orientation,type:'image/jpeg',encoderOptions:0.8},function(picdata){
 			//$('.page4 .logo').attr('src',picdata)
-			$('.page1 img').attr({'src':picdata});
+			info.img = picdata.substring(23);
+			$('.page3 .pic').css({'background-image':'url('+picdata+')','opacity':1});
 		})
 	});
-	
-	
-	
+	*/
 	
 	
 	

@@ -6,6 +6,10 @@
 	10%, 20%, 70% { transform: scaleY(0.1) }
 }*/
 
+body{
+	background:#000;
+}
+
 .dw.dw-ltr{-webkit-transform:scale(1.5,1.5);transform:scale(1.5,1.5)}
 
 .logo{left:20px;top:20px;}
@@ -26,7 +30,6 @@
 .info .sub{left:258px;width:128px;top:697px;height:51px;cursor:pointer;    background:#966;opacity:.5}
 
 .coy{height:50px;line-height:50px;text-align:center;color:#fff;background:#323256;border-top:3px solid #E50150;}
-
 
 
 

@@ -164,7 +164,8 @@ var fileEle = J.initUpImg(element,'image/*',function(reader){
 });
 ~~~
 initUpImg函数返回一个file类型的input；
-reader.result 是选择图片后 图片的base64字符串
+
+reader.result 是选择图片后 图片的base64字符串；
 
 
 ### 图片压缩
@@ -174,7 +175,8 @@ J.compressionPIC(url,{maxWidth:100,type:'image/png',encoderOptions:0.92},functio
 })
 ~~~
 maxWidth 限制图片的最大宽度；如果图片宽度小于maxWidth，返回的图片保持原始宽度；
-type为jpeg webp的情况下 encoderOptions才起作用
+
+type为jpeg或webp的情况下，encoderOptions才起作用；
 
 
 ### 判断是否为手机号码

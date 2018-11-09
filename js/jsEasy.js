@@ -1,5 +1,20 @@
 //https://github.com/chocho-1115/H5-template by 华扬长沙 杨燚平 email：849890769@qq.com
 
+
+
+/*function getElementByAttr(tag,attr,value)
+{
+    var aElements=document.getElementsByTagName(tag);
+    var aEle=[];
+    for(var i=0;i<aElements.length;i++)
+    {
+        if(aElements[i].getAttribute(attr)==value)
+            aEle.push( aElements[i] );
+    }
+    return aEle;
+}*/
+
+
 window.publicInfo = {
 	content : null,
 	page : null,
@@ -279,38 +294,45 @@ Date.prototype.format = function(format)
 		}
 	};
 	
-	JSeasy.countDown = function (time,callback){
-		var data = {
+	JSeasy.countDown = function (time,opt){
+		
+		opt.framerate = opt.framerate||1;
+		
+		var res = {
 			death: false,
 			day: 0,
 			hour: 0,
 			minute: 0,
-			second: 0
+			second: 0,
+			millisecond: 0
 		};
 		
-		var end_time = (new Date(time)).getTime();//月份是实际月份-1
-
-		var sys_second = (end_time-new Date().getTime())/1000;
-
+		var sys_second = (time-new Date().getTime())/1000;
+		var sys_second_speed = 1/opt.framerate;
+		
 		function anim(){
-			if (sys_second > 1) {
-				data.day = Math.floor((sys_second / 3600) / 24);
-				data.hour = Math.floor((sys_second / 3600) % 24);
-				data.minute = Math.floor((sys_second / 60) % 60);
-				data.second = Math.floor(sys_second % 60);
-				sys_second -= 1;
-			} else { 
+			if (sys_second < 1) {
 				clearInterval(timer);
-				data.death = true;//
-				data.day = 0;//计算天
-				data.hour = 0;//计算小时
-				data.minute = 0;//计算分钟
-				data.second = 0;//计算秒杀
+				res.death = true;//
+				res.day = 0;//计算天
+				res.hour = 0;//计算小时
+				res.minute = 0;//计算分钟
+				res.second = 0;//计算秒杀
+				if(opt.onComplete)opt.onComplete(res);
+			} else {
+				res.day = Math.floor((sys_second / 3600) / 24);
+				res.hour = Math.floor((sys_second / 3600) % 24);
+				res.minute = Math.floor((sys_second / 60) % 60);
+				res.second = Math.floor(sys_second % 60);
+				res.millisecond = Math.floor(sys_second % 1 * 1000);
+				sys_second -= sys_second_speed;
+				if(opt.onUpdate)opt.onUpdate(res);
 			}
-			if(callback)callback(data);
+			
 		}
 		anim();
-		var timer = setInterval(anim, 1000);
+		var timer = setInterval(anim, 1000/opt.framerate);
+		return timer;
 	};
 	
 	JSeasy.throttle = function (method,context){
@@ -579,7 +601,7 @@ Date.prototype.format = function(format)
 	JSeasy.isMobile = function (str){
 		if(str==null||str=="") return false;
 		//var result=str.match(/^((\(\d{2,3}\))|(\d{3}\-))?((13\d{9})|(15\d{9})|(18\d{9}))$/);
-		var result=str.match(/^1[3|4|5|6|7|8][0-9]\d{8}$/);
+		var result=str.match(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/);
 		if(result==null)return false;
 		return true;
 	};
@@ -639,7 +661,7 @@ Date.prototype.format = function(format)
 	
 	// encoderOptions 可选
 	// 在指定图片格式为 image/jpeg 或 image/webp的情况下，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92。其他参数会被忽略。
-	JSeasy.compressionPIC = function(src,{maxWidth=640,type='image/png',encoderOptions=0.92}={},callback){
+	JSeasy.compressionPIC = function(src,{maxSize=640,exif_orientation=0,type='image/png',encoderOptions=0.92}={},callback){
 		var Img = new Image(); 
 		Img.onload = init;  
 		Img.onerror = function() {  
@@ -654,15 +676,48 @@ Date.prototype.format = function(format)
 		function init(name){
 
 			var canvas = document.createElement('canvas');
-
-			var w = Math.min(maxWidth,Number(this.width))
-			var h = this.height*w/this.width;
-
+			
+			var pw = Number(this.width);
+			var ph = Number(this.height);
+			var w = 0, h = 0;
+			if(pw>=ph){
+				w = Math.min(maxSize, pw)
+				h = ph*w/pw;
+			}else{
+				h = Math.min(maxSize, ph);
+				w = pw*h/ph;
+			}
+			
+/*	Orientation
+	1	0°
+	3	180°
+	6	顺时针90°
+	8	逆时针90°
+*/
+			var rotate = 0;
+			if(exif_orientation==6){
+				var w_ = w;
+				var h_ = h;
+				w = h_;
+				h = w_;
+				rotate = 90
+			}else if(exif_orientation==8){
+				var w_ = w;
+				var h_ = h;
+				w = h_;
+				h = W_;
+				rotate = -90
+			}else if(exif_orientation==3){
+				rotate = 180
+			}
+			
 			canvas.width = w;
 			canvas.height = h;
-			var ctx = canvas.getContext("2d")
-
-			ctx.drawImage(this, 0, 0, w, h);
+			var ctx = canvas.getContext("2d");
+			ctx.translate(w/2, h/2)
+			ctx.rotate(Math.PI/180*rotate);
+			
+			ctx.drawImage(this, -w/2, -h/2, w, h);
 
 			if(callback)callback(canvas.toDataURL(type,encoderOptions));
 
@@ -673,7 +728,114 @@ Date.prototype.format = function(format)
 	
 	
 	
+	// 这里的获取exif要将图片转ArrayBuffer对象，这里假设获取了图片的baes64
+	// 步骤一
+	// base64转ArrayBuffer对象
+
+	/*
+	orientation值	旋转角度
+	1	0°
+	3	180°
+	6	顺时针90°
+	8	逆时针90°
+
+	*/
 	
+	JSeasy.exifOrientation = function (base64){
+		  function base64ToArrayBuffer(base64) {
+			base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
+			var binary = atob(base64);
+			var len = binary.length;
+			var buffer = new ArrayBuffer(len);
+			var view = new Uint8Array(buffer);
+			for (var i = 0; i < len; i++) {
+			  view[i] = binary.charCodeAt(i);
+			}
+			return buffer;
+		  }
+		// 步骤二，Unicode码转字符串
+		// ArrayBuffer对象 Unicode码转字符串
+		  function getStringFromCharCode(dataView, start, length) {
+			var str = '';
+			var i;
+			for (i = start, length += start; i < length; i++) {
+			  str += String.fromCharCode(dataView.getUint8(i));
+			}
+			return str;
+		  }
+
+		// 步骤三，获取jpg图片的exif的角度（在ios体现最明显）
+		  function getOrientation(arrayBuffer) {
+			var dataView = new DataView(arrayBuffer);
+			var length = dataView.byteLength;
+			var orientation;
+			var exifIDCode;
+			var tiffOffset;
+			var firstIFDOffset;
+			var littleEndian;
+			var endianness;
+			var app1Start;
+			var ifdStart;
+			var offset;
+			var i;
+			// Only handle JPEG image (start by 0xFFD8)
+			if (dataView.getUint8(0) === 0xFF && dataView.getUint8(1) === 0xD8) {
+			  offset = 2;
+			  while (offset < length) {
+				if (dataView.getUint8(offset) === 0xFF && dataView.getUint8(offset + 1) === 0xE1) {
+				  app1Start = offset;
+				  break;
+				}
+				offset++;
+			  }
+			}
+			if (app1Start) {
+			  exifIDCode = app1Start + 4;
+			  tiffOffset = app1Start + 10;
+			  if (getStringFromCharCode(dataView, exifIDCode, 4) === 'Exif') {
+				endianness = dataView.getUint16(tiffOffset);
+				littleEndian = endianness === 0x4949;
+
+				if (littleEndian || endianness === 0x4D4D /* bigEndian */) {
+				  if (dataView.getUint16(tiffOffset + 2, littleEndian) === 0x002A) {
+					firstIFDOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
+
+					if (firstIFDOffset >= 0x00000008) {
+					  ifdStart = tiffOffset + firstIFDOffset;
+					}
+				  }
+				}
+			  }
+			}
+			if (ifdStart) {
+			  length = dataView.getUint16(ifdStart, littleEndian);
+
+			  for (i = 0; i < length; i++) {
+				offset = ifdStart + i * 12 + 2;
+				if (dataView.getUint16(offset, littleEndian) === 0x0112 /* Orientation */) {
+
+				  // 8 is the offset of the current tag's value
+				  offset += 8;
+
+				  // Get the original orientation value
+				  orientation = dataView.getUint16(offset, littleEndian);
+
+				  // Override the orientation with its default value for Safari (#120)
+				  //if (IS_SAFARI_OR_UIWEBVIEW) {
+					//dataView.setUint16(offset, 1, littleEndian);
+				  //}
+				  break;
+				}
+			  }
+			}
+			return orientation;
+		  }
+
+
+		var data = base64ToArrayBuffer(base64);
+		return getOrientation(data);
+
+	};
 	
 	
 	
