@@ -8,9 +8,8 @@ $(window).load(function(e) {
 	//跳到第二页
 	H5Init({
 		pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
-		viewportHeight: 1008,//640 1136 1236 1250    750 1334 1448 1450    
 		//scale : window.innerHeight<1008?window.innerHeight/1008:1,  //此参数 作废
-		
+
 		//滑动翻页控制
 		// 0 代表可上翻  也可以下翻   1 代表只可下翻    -1代表只可以上翻   false 代表不可以滑动翻页
 		pageSwipeB : {
@@ -24,19 +23,22 @@ $(window).load(function(e) {
 		},
 	});
 	
+	//J.setViewportMinHeight(1008);
+	
 	//横屏 的时候调用
-	//window.orientation = 90
-	/*JSeasy.rotateWindows({
-		winW:window.innerHeight,//页面最大宽度 在手机中根据手机高度自动适配
-		winH:640,//页面适配宽度
+	//window.orientation = 180
+	JSeasy.rotateWindows({
+		viewportMinHeight: 1008,
 		callback: function(opt){
+			
+			
 			
 		},
 		onRotate: function(opt){
 			
 		}
 	});
-	*/
+	
 	window.publicInfo.pageCallback = {
 		'2':function(){
 			

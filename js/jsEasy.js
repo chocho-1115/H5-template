@@ -16,14 +16,13 @@
 
 
 window.publicInfo = {
-	content : null,
-	page : null,
+	content : $('#content'),
+	page : $('.page'),
 	indexPage : -1,
 	pageStatus : -1,//页面切换状态
 	pageCutover : true,//页面切换开关 可以用来从外部限制页面是否可以滑动翻页
 	pageLen : 0,//总共多少页
 	
-	viewportHeight : null,
 	scale : 1,
 	prefix : null,
 	htmlFontSize : -1,
@@ -36,6 +35,7 @@ window.publicInfo = {
 	
 	pageCallback: {}
 };
+window.publicInfo.pageLen = publicInfo.page.length;
 
 
 $('img').on('click',function(e){
@@ -69,28 +69,23 @@ $('.close').on('click',function(e){
 
 function H5Init(opt){
 	
-	publicInfo.content = $('#content');
-	publicInfo.page = $('.page');
+
 	
 	
 	
 	publicInfo.pageSwipeB = opt.pageSwipeB;
 	
-	publicInfo.viewportHeight = opt.viewportHeight||null;
 	publicInfo.scale = opt.scale||1;
 	publicInfo.pageAnimateType = opt.pageAnimateType||'fade';
 	publicInfo.isRem = opt.isRem||false;
 	publicInfo.setPrefix = opt.setPrefix||false;
-	publicInfo.pageLen = publicInfo.page.length;
+	
 	
 	
 	
 	JSeasy.pageAnimate[publicInfo.pageAnimateType+'Init']();
 	
-	if(publicInfo.viewportHeight&&window.innerHeight<publicInfo.viewportHeight){
-		var w = publicInfo.viewportHeight*window.innerWidth/window.innerHeight;
-		document.getElementById('viewEle').setAttribute('content','width='+w+', user-scalable=no,target-densitydpi = device-dpi');
-	}
+	
 	
 	//document.getElementById('viewEle').setAttribute('content','width='+(opt.viewportWidth||640)+', user-scalable=no,target-densitydpi = device-dpi');
 	/*if(publicInfo.scale!=1){
@@ -252,7 +247,17 @@ Date.prototype.format = function(format)
 
 (function(window){
 	window.JSeasy = window.J = {};
+	
+	JSeasy.setViewportMinHeight = function(minH){
 		
+		var winW = document.documentElement.clientWidth;
+		var winH = document.documentElement.clientHeight;
+		if(minH&&winH<minH){
+			var w = minH*winW/winH;
+			document.getElementById('viewEle').setAttribute('content','width='+w+', user-scalable=no,target-densitydpi = device-dpi');
+		}
+		
+	};
 	JSeasy.EventUtil = {
 		
 		//事件处理程序
@@ -922,8 +927,7 @@ Date.prototype.format = function(format)
 	JSeasy.rotateWindows = function(opt){
 
 		opt = opt||{};
-		var isSet = false,
-			winW = opt.winW||1136, winH = opt.winH||640;
+		var isSet = false;
 		
 		$('body').addClass('horizontalWindows');//水平窗口
 		
@@ -933,26 +937,33 @@ Date.prototype.format = function(format)
 		function changeFunc(event){
 			//pc端
 			if(window.orientation===undefined){
+				var winW = window.innerWidth, winH = window.innerHeight;
 				$('.content').css({width:winW,height:winH});
 				opt.callback&&opt.callback({winW:winW,winH:winH});
 				return false
 			}
 			
+			//alert(window.orientation)
 			if ( window.orientation === 180 || window.orientation === 0 ) {//竖着的
 				if(!isSet){
+					opt.callback&&opt.callback();
+					
+					J.setViewportMinHeight(opt.viewportMinHeight||1008);
+					
 					isSet = true;
+					var winW = window.innerHeight, winH = window.innerWidth;
 					//winW = $('body').height();//window.innerHeight;
 					$('.content').css({
-						position:'absolute',
-						left:'50%',
-						top:'50%',
+						//position:'absolute',
+						//left:'50%',
+						//top:'50%',
 						transform:'rotate(90deg)',
 						width:winW,
 						height:winH,
 						marginLeft:winW/-2,
 						marginTop:winH/-2
 					})
-					opt.callback&&opt.callback();
+					
 				}
 				$('.rotateWindows_tips').css('display','none');
 				opt.onRotate&&opt.onRotate(0);
