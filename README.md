@@ -35,7 +35,6 @@
 ~~~ js
 H5Init({
 	pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
-	viewportHeight: 1008,//1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
 	//scale : window.innerHeight<1008?window.innerHeight/1008:1,  //此参数 作废
 
 	//滑动翻页控制
@@ -47,6 +46,10 @@ H5Init({
 		'3':false
 	},
 });
+~~~
+### 设置最小适配高度  翻页动画  和是否滑动翻页
+~~~ js
+J.setViewportMinHeight(1008);//1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
 ~~~
 ### 手动页面跳转
 ~~~ js
@@ -140,12 +143,15 @@ J.pageFunc(page,{
 ~~~ html
 <div class="rotateWindows_tips"></div>
 ~~~
+横屏模式下，不要手动调用J.setViewportMinHeight();
 
+横屏模式下不支持threeD翻页动画
 ~~~ js
 JSeasy.rotateWindows({
-	winW:window.innerHeight,//页面最大宽度 在手机中根据手机高度自动适配
-	winH:640,//页面适配宽度
+	viewportMinHeight: 1008,
 	callback: function(opt){
+
+
 
 	},
 	onRotate: function(opt){
