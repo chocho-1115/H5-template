@@ -31,7 +31,7 @@
 
 ~~~
 
-### 设置最小适配高度  翻页动画  和是否滑动翻页
+### 翻页动画  和是否滑动翻页
 ~~~ js
 H5Init({
 	pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
@@ -47,7 +47,7 @@ H5Init({
 	},
 });
 ~~~
-### 设置最小适配高度  翻页动画  和是否滑动翻页
+### 设置最小适配高度
 ~~~ js
 J.setViewportMinHeight(1008);//1008为 页面内容最小高度；默认按640的宽度适配  但是在如ip4屏幕按相对较短的手机下  底部内容显示不全  需要根据页面内容的高度 来调整适配宽度
 ~~~
@@ -114,7 +114,8 @@ window.J.lazyLoad('.lazy',{
 	complete:function(assets){
 		console.log(assets)
 	},
-	minTime:6000
+	minTime:6000,
+	baseUrl:''
 });
 ~~~
 如果元素为img，加载后的资源会赋值到src属性上。如果为非img元素，加载的资源会写到行内样式 background-image 中；
@@ -147,7 +148,7 @@ J.pageFunc(page,{
 
 横屏模式下不支持threeD翻页动画
 ~~~ js
-JSeasy.rotateWindows({
+J.rotateWindows({
 	viewportMinHeight: 1008,
 	callback: function(opt){
 
@@ -179,19 +180,22 @@ J.compressionPIC(url,{maxSize:100,type:'image/png',encoderOptions:0.92},function
 	
 })
 ~~~
-maxSize 限制图片的最大宽度；如果图片宽度小于maxWidth，返回的图片保持原始宽度；
+maxSize 限制图片的最大尺寸；如果图片尺寸小于maxSize，返回的图片保持原始尺寸；
 type为jpeg或webp的情况下，encoderOptions才起作用；
 
-
+### 是否为微信环境
+~~~ js
+J.isWeixin()
+~~~
 
 ### 判断是否为手机号码
 ~~~ js
-JSeasy.isMobile(srt)
+J.isMobile(srt)
 ~~~
 
 ### 判断是否为邮箱地址
 ~~~ js
-JSeasy.isEmail(srt)
+J.isEmail(srt)
 ~~~
 
 ### 生成随机数

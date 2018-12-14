@@ -370,6 +370,14 @@ Date.prototype.format = function(format)
 		}
 	};
 	
+	JSeasy.isWeixin = function (){
+		var ua = window.navigator.userAgent.toLowerCase();
+		if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	JSeasy.browserDetect = function() {
 		var obj = {
@@ -480,6 +488,7 @@ Date.prototype.format = function(format)
 		var num = 0,
 			imgArrObj = {},
 			minTime = params.minTime || 0,
+			baseUrl =  params.baseUrl || '',
 			len = srcArr.length,
 			t = minTime/len,
 			st = (new Date()).getTime();
@@ -495,12 +504,12 @@ Date.prototype.format = function(format)
 					var self = this;
 					setTimeout(function(){
 						endLoad(self,e.type,i);
-					},t*i-( (new Date()).getTime() -st));
+					},t*(i+1)-( (new Date()).getTime() -st));
 				};
 				
 				if(typeof(srcArr[i]) == 'string') srcArr[i] = {path:srcArr[i],name:i};
 				
-				newImg.src = srcArr[i].path;
+				newImg.src = baseUrl + srcArr[i].path;
 				
 			}(i));
 		}
@@ -560,7 +569,8 @@ Date.prototype.format = function(format)
 			complete:function(result){
 				if(params.complete)params.complete(result);
 			},
-			minTime:params.minTime
+			minTime:params.minTime,
+			baseUrl params.baseUrl || ''
 		})
 		
 	};
@@ -576,7 +586,7 @@ Date.prototype.format = function(format)
 	JSeasy.scrollBox_M = function(boxEle,nrEle){
 		if(!boxEle||!nrEle)return false;
 		var mc = new Hammer(boxEle),
-			startRegY = 0;
+			startRegY = 0,
 			startTop = 0,
 			minTop = boxEle.offsetHeight-nrEle.offsetHeight,
 			B = true;
@@ -693,12 +703,8 @@ Date.prototype.format = function(format)
 				w = pw*h/ph;
 			}
 			
-/*	Orientation
-	1	0°
-	3	180°
-	6	顺时针90°
-	8	逆时针90°
-*/
+//	Orientation  1	0°  3	180°  6	顺时针90°  8	逆时针90°
+
 			var rotate = 0;
 			if(exif_orientation==6){
 				var w_ = w;
@@ -951,7 +957,8 @@ Date.prototype.format = function(format)
 					J.setViewportMinHeight(opt.viewportMinHeight||1008);
 					
 					isSet = true;
-					var winW = window.innerHeight, winH = window.innerWidth;
+					// var winW = window.innerHeight, winH = window.innerWidth;
+					var winW = document.documentElement.clientHeight, winH = document.documentElement.clientWidth;
 					//winW = $('body').height();//window.innerHeight;
 					$('.content').css({
 						//position:'absolute',

@@ -23,11 +23,15 @@ $(window).load(function(e) {
 		},
 	});
 	
-	//J.setViewportMinHeight(1008);
-	
+	J.setViewportMinHeight(1008); //640 1138 1236 1250    750 1334 1448 1450    
+	if(window.history.length==1){
+		J.setViewportMinHeight(1150); //640 1138 1236 1250    750 1334 1448 1450    
+	}else{
+		J.setViewportMinHeight(1150);
+	}
 	//横屏 的时候调用
 	//window.orientation = 180
-	JSeasy.rotateWindows({
+	/*JSeasy.rotateWindows({
 		viewportMinHeight: 1008,
 		callback: function(opt){
 			
@@ -37,7 +41,7 @@ $(window).load(function(e) {
 		onRotate: function(opt){
 			
 		}
-	});
+	});*/
 	
 	window.publicInfo.pageCallback = {
 		'2':function(){
@@ -107,8 +111,8 @@ $(window).load(function(e) {
 	
 	//懒加载   在有load页面的时候用
 	/*	window.J.lazyLoad('.lazy_load',{
-		fileload:function(item){console.log(item)},
-		complete:function(assets){console.log(assets)
+		fileload:function(item){},
+		complete:function(assets){
 			var $loadNum = $('#set_load_num');
 			
 			J.pageFunc(0,{endCallback:function(){
@@ -117,7 +121,7 @@ $(window).load(function(e) {
 					fileload:function(item){
 						$loadNum.html(parseInt(item.progress*100)+'%');
 					},
-					complete:function(assets){console.log(assets)
+					complete:function(assets){
 						$loadNum.html(100+'%');
 						setTimeout(function(){
 							J.pageFunc(1);
