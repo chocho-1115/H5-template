@@ -570,7 +570,7 @@ Date.prototype.format = function(format)
 				if(params.complete)params.complete(result);
 			},
 			minTime:params.minTime,
-			baseUrl params.baseUrl || ''
+			baseUrl:params.baseUrl || ''
 		})
 		
 	};
