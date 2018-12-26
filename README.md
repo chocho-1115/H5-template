@@ -1,6 +1,13 @@
 
 ## H5-template
 
+
+### webpack打包
+
+[https://github.com/chocho-1115/h5-webp](https://github.com/chocho-1115/h5-webp)
+
+
+
 ### 页面基本结构
 ~~~ html
 <div class="content" id="content">
