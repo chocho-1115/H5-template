@@ -9,11 +9,18 @@
 <meta itemprop="image" content="">
 <title>赶紧换标题</title>
 <link href="css/reset.css" rel="stylesheet" />
-<!--<link href="plugins/animate.min.css" rel="stylesheet" />-->
+<!--<link href="https://cdn.bootcss.com/animate.css/3.7.0/animate.min.css" rel="stylesheet">-->
 <link href="css/main.css" rel="stylesheet" />
 
-<!--<script src="plugins/TimelineMax.min.js"></script>
-<script src="plugins/easeljs-0.8.1.min.js"></script>-->
+<!--<script src="https://cdn.bootcss.com/EaselJS/1.0.2/easeljs.min.js"></script>-->
+	
+<!--<script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+<script>
+	var vConsole = new VConsole();
+	console.log('Hello world');
+</script>-->
+	
+	
 </head>
 <body>
 
@@ -47,8 +54,6 @@
 <div class="micBtn" id="micBtn"><span class="cen boxSizing"></span></div>
 
 <img class="pt-page-moveIconUp" id='upJt' src="image/icon_up.png">
-<!--end 主体部分-->
-
 
 <!--<div class="abso scrollBox">
     <div class="scrollNr">
@@ -89,25 +94,26 @@
 <!--分享提示-->
 <div id="fx"> <img class='fx_text' src="image/fx_text.png" /> </div>
 <div id="tipsBox" close=true><span class="abso">提示文案</span></div>
-
+	
+<div class="rotateWindows_tips"></div>
 
 <!--<div class="coy">
 	湘ICP备13002230号
 </div>-->
 
 
-<div class="rotateWindows_tips"></div>
+
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/hammer.js/2.0.8/hammer.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
-<!--页面切换动画-->
+	
+<script src="libs/TweenMax.min.js"></script>
 <script src="js/jsEasy.js" defer='defer'></script>
-<script src="js/main.js" defer="defer"></script>
+<script src="js/main.js?v=1" defer="defer"></script>
 
 <!--<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="https://www.seth5.com/jssdk.js" charset="utf-8"></script>
 <script>
-
+//https://bl.seth5.com/jsdk/jssdk.js
 //https://www.oo11.net/jssdk.js
 //https://www.hylinkcs.com/lab/jssdk.js
 //http://www.dqpage.com/jssdk/jssdk.js
@@ -142,4 +148,6 @@ $(function(){
 
 </body>
 </html>
-
+<style>
+a[title='站长统计'] { opacity:0; font-size:0;position:absolute;}
+</style>

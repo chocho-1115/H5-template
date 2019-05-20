@@ -299,9 +299,10 @@ Date.prototype.format = function(format)
 		}
 	};
 	
-	JSeasy.countDown = function (time,opt){
+	JSeasy.countDown = function (endTime,opt){
 		
 		opt.framerate = opt.framerate||1;
+		opt.nowTime = opt.nowTime||new Date().getTime();
 		
 		var res = {
 			death: false,
@@ -312,7 +313,7 @@ Date.prototype.format = function(format)
 			millisecond: 0
 		};
 		
-		var sys_second = (time-new Date().getTime())/1000;
+		var sys_second = (endTime-opt.nowTime)/1000;
 		var sys_second_speed = 1/opt.framerate;
 		
 		function anim(){
@@ -335,8 +336,9 @@ Date.prototype.format = function(format)
 			}
 			
 		}
-		anim();
+		// 
 		var timer = setInterval(anim, 1000/opt.framerate);
+		anim();
 		return timer;
 	};
 	
@@ -676,7 +678,15 @@ Date.prototype.format = function(format)
 	
 	// encoderOptions 可选
 	// 在指定图片格式为 image/jpeg 或 image/webp的情况下，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92。其他参数会被忽略。
-	JSeasy.compressionPIC = function(src,{maxSize=640,exif_orientation=0,type='image/png',encoderOptions=0.92}={},callback){
+	// encoderOptions 可选
+	// 在指定图片格式为 image/jpeg 或 image/webp的情况下，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92。其他参数会被忽略。
+	JSeasy.compressionPIC = function(src, opt, callback){
+		
+		var maxSize = Math.max(opt.maxSize, 0) || 0;
+		var exif_orientation = opt.exif_orientation || 0;
+		var type = opt.type || 'image/png';
+		var encoderOptions = opt.encoderOptions || 0.92;
+		
 		var Img = new Image(); 
 		Img.onload = init;  
 		Img.onerror = function() {  
@@ -691,6 +701,8 @@ Date.prototype.format = function(format)
 		function init(name){
 
 			var canvas = document.createElement('canvas');
+			
+			if(!maxSize)maxSize = Math.max(this.width, this.height);
 			
 			var pw = Number(this.width);
 			var ph = Number(this.height);
@@ -735,7 +747,6 @@ Date.prototype.format = function(format)
 		}
 
 	}
-	
 	
 	
 	
@@ -1018,9 +1029,7 @@ Date.prototype.format = function(format)
 			TweenMax.set(opt.newPage,{//display: 'block',
 				y:opt.oldPage.height()*opt.direction,'z-index':3});
 			TweenMax.to(opt.newPage,opt.time/1000,{y:0,opacity:1,onComplete:function(){
-				//if(publicInfo.indexPage==window.publicInfo.page.index(newPage)){
-					TweenMax.set(opt.oldPage,{display: 'none','z-index':1});
-				//}
+					if(opt.oldPage>=0)TweenMax.set(opt.oldPage,{display: 'none','z-index':1});
 				opt.endCallback()
 			}});
 		},

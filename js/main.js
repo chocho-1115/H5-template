@@ -7,7 +7,7 @@ $(window).load(function(e) {
 	
 	//跳到第二页
 	H5Init({
-		pageAnimateType: 'fade',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
+		pageAnimateType: 'translate',//fade 渐隐渐现翻页   translate 位移翻页 threeD  三d翻页
 		//scale : window.innerHeight<1008?window.innerHeight/1008:1,  //此参数 作废
 
 		//滑动翻页控制
@@ -23,11 +23,10 @@ $(window).load(function(e) {
 		},
 	});
 	
-	J.setViewportMinHeight(1008); //640 1138 1236 1250    750 1334 1448 1450    
 	if(window.history.length==1){
 		J.setViewportMinHeight(1150); //640 1138 1236 1250    750 1334 1448 1450    
 	}else{
-		J.setViewportMinHeight(1150);
+		J.setViewportMinHeight(1210);
 	}
 	//横屏 的时候调用
 	//window.orientation = 180
@@ -42,6 +41,10 @@ $(window).load(function(e) {
 			
 		}
 	});*/
+	
+	$('input').on('blur',function(){
+		$(window).scrollTop(0);
+	});
 	
 	window.publicInfo.pageCallback = {
 		'2':function(){
@@ -68,7 +71,7 @@ $(window).load(function(e) {
 		J.pageFunc(1,{time:0,endCallback:function(){console.log('翻页成功后的回调')}})//显示第indexPage页
 	});*/
 	
-	var page = Number(J.getQueryString('page'))||1//
+	var page = Number(J.getQueryString('page'))||3//
 	J.pageFunc(page,{
 		time:300,//翻页动画的运行时间
 		endCallback:function(){},//翻页后的回调函数
